@@ -29,3 +29,13 @@ D:\Study\Third Year\Semester 6\Algo\Project\MATERIALS\Image Encryption and Compr
 D:\Study\Third Year\Semester 6\Algo\Project\MATERIALS\Image Encryption and Compression Backup\[1] Image Encryption and Compression\Startup Code\[TEMPLATE] ImageEncryptCompress\ImageEncryptCompress\obj\Debug\ImageEncryptCompress.csproj.CoreCompileInputs.cache
 D:\Study\Third Year\Semester 6\Algo\Project\MATERIALS\Image Encryption and Compression Backup\[1] Image Encryption and Compression\Startup Code\[TEMPLATE] ImageEncryptCompress\ImageEncryptCompress\obj\Debug\ImageEncryptCompress.exe
 D:\Study\Third Year\Semester 6\Algo\Project\MATERIALS\Image Encryption and Compression Backup\[1] Image Encryption and Compression\Startup Code\[TEMPLATE] ImageEncryptCompress\ImageEncryptCompress\obj\Debug\ImageEncryptCompress.pdb
+D:\Study\Third Year\Semester 6\Algo\Project\Image_Encryption_Compression\Startup Code\[TEMPLATE] ImageEncryptCompress\ImageEncryptCompress\bin\Debug\ImageEncryptCompress.exe.config
+D:\Study\Third Year\Semester 6\Algo\Project\Image_Encryption_Compression\Startup Code\[TEMPLATE] ImageEncryptCompress\ImageEncryptCompress\bin\Debug\ImageEncryptCompress.exe
+D:\Study\Third Year\Semester 6\Algo\Project\Image_Encryption_Compression\Startup Code\[TEMPLATE] ImageEncryptCompress\ImageEncryptCompress\bin\Debug\ImageEncryptCompress.pdb
+D:\Study\Third Year\Semester 6\Algo\Project\Image_Encryption_Compression\Startup Code\[TEMPLATE] ImageEncryptCompress\ImageEncryptCompress\obj\Debug\ImageEncryptCompress.csproj.AssemblyReference.cache
+D:\Study\Third Year\Semester 6\Algo\Project\Image_Encryption_Compression\Startup Code\[TEMPLATE] ImageEncryptCompress\ImageEncryptCompress\obj\Debug\ImageEncryptCompress.MainForm.resources
+D:\Study\Third Year\Semester 6\Algo\Project\Image_Encryption_Compression\Startup Code\[TEMPLATE] ImageEncryptCompress\ImageEncryptCompress\obj\Debug\ImageEncryptCompress.Properties.Resources.resources
+D:\Study\Third Year\Semester 6\Algo\Project\Image_Encryption_Compression\Startup Code\[TEMPLATE] ImageEncryptCompress\ImageEncryptCompress\obj\Debug\ImageEncryptCompress.csproj.GenerateResource.cache
+D:\Study\Third Year\Semester 6\Algo\Project\Image_Encryption_Compression\Startup Code\[TEMPLATE] ImageEncryptCompress\ImageEncryptCompress\obj\Debug\ImageEncryptCompress.csproj.CoreCompileInputs.cache
+D:\Study\Third Year\Semester 6\Algo\Project\Image_Encryption_Compression\Startup Code\[TEMPLATE] ImageEncryptCompress\ImageEncryptCompress\obj\Debug\ImageEncryptCompress.exe
+D:\Study\Third Year\Semester 6\Algo\Project\Image_Encryption_Compression\Startup Code\[TEMPLATE] ImageEncryptCompress\ImageEncryptCompress\obj\Debug\ImageEncryptCompress.pdb

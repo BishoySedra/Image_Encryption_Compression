@@ -111,5 +111,56 @@ namespace ImageEncryptCompress
         {
 
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            // getting the intial seed and tap position
+            string initialSeed = txtGaussSigma.Text;
+            int tapPosition = int.Parse(textBox1.Text);
+
+            // showing message box for initial seed and tap position
+            //MessageBox.Show("Initial Seed: " + initialSeed + "\nTap Position: " + tapPosition);
+
+            // declare stop watch to calculate the time of the operation
+            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+
+            // start the stop watch
+            sw.Start();
+
+            ImageMatrix = ImageOperations.Encrypt(ImageMatrix, initialSeed, tapPosition);
+
+            // stop the stop watch
+            sw.Stop();
+
+            // show the time of the operation in the message box
+            MessageBox.Show("Time: " + sw.ElapsedMilliseconds + " ms");
+
+            ImageOperations.DisplayImage(ImageMatrix, pictureBox1);
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            string initialSeed = txtGaussSigma.Text;
+            int tapPosition = int.Parse(textBox1.Text);
+
+            // showing message box for initial seed and tap position
+            //MessageBox.Show("Initial Seed: " + initialSeed + "\nTap Position: " + tapPosition);
+
+            // declare stop watch to calculate the time of the operation
+            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+
+            // start the stop watch
+            sw.Start();
+
+            ImageMatrix = ImageOperations.Decrypt(ImageMatrix, initialSeed, tapPosition);
+
+            // stop the stop watch
+            sw.Stop();
+
+            // show the time of the operation in the message box
+            MessageBox.Show("Time: " + sw.ElapsedMilliseconds + " ms");
+
+            ImageOperations.DisplayImage(ImageMatrix, pictureBox1);
+        }
     }
 }
