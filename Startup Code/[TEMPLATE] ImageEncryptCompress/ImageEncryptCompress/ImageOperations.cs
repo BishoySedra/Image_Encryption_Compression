@@ -361,5 +361,68 @@ namespace ImageEncryptCompress
 
             return decryptedImage;
         }
+    
+        // function to export the image to a file
+        // O(n * m) where n is the height of the image and m is the width of the image
+        public static void ExportImage(RGBPixel[,] ImageMatrix, string FilePath)
+        {
+            int Height = ImageMatrix.GetLength(0);
+            int Width = ImageMatrix.GetLength(1);
+
+            Bitmap ImageBMP = new Bitmap(Width, Height, PixelFormat.Format24bppRgb);
+
+            unsafe
+            {
+                BitmapData bmd = ImageBMP.LockBits(new Rectangle(0, 0, Width, Height), ImageLockMode.ReadWrite, ImageBMP.PixelFormat);
+                int nWidth = 0;
+                nWidth = Width * 3;
+                int nOffset = bmd.Stride - nWidth;
+                byte* p = (byte*)bmd.Scan0;
+                for (int i = 0; i < Height; i++)
+                {
+                    for (int j = 0; j < Width; j++)
+                    {
+                        p[2] = ImageMatrix[i, j].red;
+                        p[1] = ImageMatrix[i, j].green;
+                        p[0] = ImageMatrix[i, j].blue;
+                        p += 3;
+                    }
+
+                    p += nOffset;
+                }
+                ImageBMP.UnlockBits(bmd);
+            }
+
+            ImageBMP.Save(FilePath);
+        }
+    
+        // function to test the identicality of two images
+        // O(n * m) where n is the height of the image and m is the width of the image
+        public static bool TestIdenticality(RGBPixel[,] ImageMatrix1, RGBPixel[,] ImageMatrix2)
+        {
+            int Height1 = ImageMatrix1.GetLength(0);
+            int Width1 = ImageMatrix1.GetLength(1);
+
+            int Height2 = ImageMatrix2.GetLength(0);
+            int Width2 = ImageMatrix2.GetLength(1);
+
+            if (Height1 != Height2 || Width1 != Width2)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < Height1; i++)
+            {
+                for (int j = 0; j < Width1; j++)
+                {
+                    if (ImageMatrix1[i, j].red != ImageMatrix2[i, j].red || ImageMatrix1[i, j].green != ImageMatrix2[i, j].green || ImageMatrix1[i, j].blue != ImageMatrix2[i, j].blue)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
     }
 }

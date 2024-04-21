@@ -16,6 +16,8 @@ namespace ImageEncryptCompress
         }
 
         RGBPixel[,] ImageMatrix;
+        RGBPixel[,] ImageMatrix2;
+        string ImagePath = "";
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
@@ -55,6 +57,9 @@ namespace ImageEncryptCompress
             MessageBox.Show("Time: " + sw.ElapsedMilliseconds + " ms");
 
             ImageOperations.DisplayImage(ImageMatrix, pictureBox2);
+
+            // export the image to the desktop
+            ImageOperations.ExportImage(ImageMatrix, "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Encryption\\MY_OUTPUT\\Encryption\\Encrypted.bmp");
         }
 
         private void txtWidth_TextChanged(object sender, EventArgs e)
@@ -105,6 +110,9 @@ namespace ImageEncryptCompress
             MessageBox.Show("Time: " + sw.ElapsedMilliseconds + " ms");
 
             ImageOperations.DisplayImage(ImageMatrix, pictureBox2);
+
+            // export the image to the desktop
+            ImageOperations.ExportImage(ImageMatrix, "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Encryption\\MY_OUTPUT\\Decryption\\Decrypted.bmp");
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -161,6 +169,49 @@ namespace ImageEncryptCompress
             MessageBox.Show("Time: " + sw.ElapsedMilliseconds + " ms");
 
             ImageOperations.DisplayImage(ImageMatrix, pictureBox1);
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                //Open the browsed image and display it
+                string OpenedFilePath = openFileDialog1.FileName;
+                ImageMatrix = ImageOperations.OpenImage(OpenedFilePath);
+                ImageOperations.DisplayImage(ImageMatrix, pictureBox1);
+            }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog2 = new OpenFileDialog();
+            if (openFileDialog2.ShowDialog() == DialogResult.OK)
+            {
+                //Open the browsed image and display it
+                string OpenedFilePath = openFileDialog2.FileName;
+                ImageMatrix2 = ImageOperations.OpenImage(OpenedFilePath);
+                ImageOperations.DisplayImage(ImageMatrix2, pictureBox2);
+            }
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            // getting the intial seed and tap position
+            string initialSeed = txtGaussSigma.Text;
+            int tapPosition = int.Parse(textBox1.Text);
+
+            // testing the identicality of the two images
+            bool identical = ImageOperations.TestIdenticality(ImageMatrix, ImageMatrix2);
+
+            if (identical)
+            {
+                MessageBox.Show("IDENTICAL!!");
+            }
+            else
+            {
+                MessageBox.Show("NOT IDENTICAL!!");
+            }
         }
     }
 }
