@@ -424,5 +424,72 @@ namespace ImageEncryptCompress
 
             return true;
         }
+                public static RGBPixel[,] constructHuffmanTree(RGBPixel[,] ImageMatrix)
+        {
+
+            SortedDictionary<int, int> redFreq = new SortedDictionary<int, int>();
+            SortedDictionary<int, int> blueFreq = new SortedDictionary<int, int>();
+            SortedDictionary<int, int> greenFreq = new SortedDictionary<int, int>();
+            //            List<Tuple<int, int>> redFreq = new List<Tuple<int, int>>();
+            //            List<Tuple<int, int>> blueFreq = new List<Tuple<int, int>>();
+            //            List<Tuple<int, int>> greenFreq = new List<Tuple<int, int>>();
+            //            SortedDictionary<int, int> redTree = new SortedDictionary<int, int>();
+            //            SortedDictionary<int, int> blueTree = new SortedDictionary<int, int>();
+            //            SortedDictionary<int, int> greenTree = new SortedDictionary<int, int>();
+
+            int Height = GetHeight(ImageMatrix);
+            int Width = GetWidth(ImageMatrix);
+            // initializing the colors bits 0 -> 255 with frequency 0
+            for (int i = 0; i < 256; i++)
+            {
+                redFreq.Add(i, 0);
+                blueFreq.Add(i, 0);
+                greenFreq.Add(i, 0);
+            }
+
+            // calculating the frequency of each bit
+            for (int i = 0; i < Height; i++)
+            {
+                for (int j = 0; j < Width; j++)
+                {
+                    //                    redKey = ImageMatrix[i, j].red;
+                    //                    blueKey = ImageMatrix[i, j].blue;
+                    //                    greenKey = ImageMatrix[i, j].green;
+
+                    //                    if (!redFreq.ContainsKey(redKey))
+                    //                      redFreq.Add(redKey, 1);
+                    //                    else
+                    redFreq[ImageMatrix[i, j].red]++;
+
+                    //                    if (!blueFreq.ContainsKey(blueKey))
+                    //                        blueFreq.Add(redKey, 1);
+                    //                    else
+                    blueFreq[ImageMatrix[i, j].blue]++;
+
+                    //                    if (!greenFreq.ContainsKey(greenKey))
+                    //                        greenFreq.Add(redKey, 1);
+                    //                    else
+                    greenFreq[ImageMatrix[i, j].green]++;
+                }
+            }
+
+            List<Tuple<int, int>> redList = new List<Tuple<int, int>>();
+            List<Tuple<int, int>> blueList = new List<Tuple<int, int>>();
+            List<Tuple<int, int>> greenList = new List<Tuple<int, int>>();
+            // making a descendingly sorted frequency list carrying tuple of <bit value (0 -> 255) and bit frequency>
+            //          int cnt = 255;
+            //          foreach (var red in redFreq)
+            //                redList[cnt--] = Tuple.Create(red.Key, red.Value);
+
+            //            cnt = 255;
+            //            foreach (var blue in redFreq)
+            //                blueList[cnt--] = Tuple.Create(blue.Key, blue.Value);
+
+            //            cnt = 255;
+            //            foreach (var green in redFreq)
+            //                greenList[cnt--] = Tuple.Create(green.Key, green.Value);
+
+            // building the huffman tree using priority queue
+        }
     }
 }
