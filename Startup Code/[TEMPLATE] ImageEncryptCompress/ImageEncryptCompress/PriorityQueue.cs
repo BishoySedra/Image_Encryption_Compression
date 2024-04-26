@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace ImageEncryptCompress
 {
-    
-        public class HuffmanNode
-{
-    public int Frequency { get; set; }
-    public int Pixel { get; set; }
-    public HuffmanNode Left { get; set; }
-    public HuffmanNode Right { get; set; }
-}
+
+    public class HuffmanNode
+    {
+        public int Frequency { get; set; }
+        public int Pixel { get; set; }
+        public HuffmanNode Left { get; set; }
+        public HuffmanNode Right { get; set; }
+    }
     internal class PriorityQueue
     {
         private List<HuffmanNode> list;
@@ -103,7 +103,7 @@ namespace ImageEncryptCompress
             list.Clear();
         }
     }
-    
+
     /*
     internal class PriorityQueue<T> where T : IComparable
     {

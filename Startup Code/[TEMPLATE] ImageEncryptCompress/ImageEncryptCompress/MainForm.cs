@@ -17,7 +17,8 @@ namespace ImageEncryptCompress
 
         RGBPixel[,] ImageMatrix;
         RGBPixel[,] ImageMatrix2;
-        string ImagePath = "";
+
+        string ImagePath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Encryption\\MY_OUTPUT\\Encryption\\Encrypted.bmp";
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
@@ -59,7 +60,7 @@ namespace ImageEncryptCompress
             ImageOperations.DisplayImage(ImageMatrix, pictureBox2);
 
             // export the image to the desktop
-            ImageOperations.ExportImage(ImageMatrix, "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Encryption\\MY_OUTPUT\\Encryption\\Encrypted.bmp");
+            ImageOperations.ExportImage(ImageMatrix, ImagePath);
         }
 
         private void txtWidth_TextChanged(object sender, EventArgs e)
@@ -212,6 +213,20 @@ namespace ImageEncryptCompress
             {
                 MessageBox.Show("NOT IDENTICAL!!");
             }
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            // construct the huffman tree function
+            long result = ImageOperations.constructHuffmanTree(ImageMatrix);
+
+            // show message box for the result
+            MessageBox.Show("Result: " + result);
         }
     }
 }

@@ -4,6 +4,9 @@ using System.Text;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Drawing.Imaging;
+using System.IO;
+using System.Runtime.InteropServices;
+
 ///Algorithms Project
 ///Intelligent Scissors
 ///
@@ -32,6 +35,7 @@ namespace ImageEncryptCompress
 
         public static string seedValue;
         public static string[] keys = new string[3];
+        public static string CompressionPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Another Clone\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\RGB-Tree.txt";
 
         public static RGBPixel[,] OpenImage(string ImagePath)
         {
@@ -159,7 +163,7 @@ namespace ImageEncryptCompress
 
         // function to get the k-bit shift register for each color channel
         // O(k * 3) where k here is always 8, so O(24) = O(1)
-        public static string[] getKbitSLFSR(string initialSeed, int tapPosition, int k) 
+        public static string[] getKbitSLFSR(string initialSeed, int tapPosition, int k)
         {
             // 0 == > red, 1 ==> green, 2 ==> blue
             string[] results = new string[3];
@@ -173,7 +177,7 @@ namespace ImageEncryptCompress
             int cnt = 0;
             for (int i = 1; i <= k * 3; i++)
             {
-                
+
                 tapPositionBit = initialSeed[size - tapPosition - 1];
                 firstBit = initialSeed[0];
                 char newBit = XOR(firstBit, tapPositionBit);
@@ -214,7 +218,7 @@ namespace ImageEncryptCompress
 
         // function to do XORing between two binary strings
         // O(n) where n is the length of the binary string where n here is always 8, so O(8) = O(1)
-        public static string XOR(string a, string b) 
+        public static string XOR(string a, string b)
         {
             string result = String.Empty;
             for (int i = 0; i < a.Length; i++)
@@ -361,7 +365,7 @@ namespace ImageEncryptCompress
 
             return decryptedImage;
         }
-    
+
         // function to export the image to a file
         // O(n * m) where n is the height of the image and m is the width of the image
         public static void ExportImage(RGBPixel[,] ImageMatrix, string FilePath)
@@ -395,7 +399,7 @@ namespace ImageEncryptCompress
 
             ImageBMP.Save(FilePath);
         }
-    
+
         // function to test the identicality of two images
         // O(n * m) where n is the height of the image and m is the width of the image
         public static bool TestIdenticality(RGBPixel[,] ImageMatrix1, RGBPixel[,] ImageMatrix2)
@@ -425,7 +429,11 @@ namespace ImageEncryptCompress
             return true;
         }
 
-                private static void writeHuffmanDict(HuffmanNode root, string s, Dictionary<int, string> dict, ref long Total_Bits, StreamWriter stream)
+        // function to get the frequency of each pixel in the image
+
+
+        // function to get the frequency of each pixel in the image
+        private static void writeHuffmanDict(HuffmanNode root, string s, Dictionary<int, string> dict, ref long Total_Bits, StreamWriter stream)
         {
             // Assign 0 to the left node and recur
             if (root.Left != null)
@@ -433,6 +441,8 @@ namespace ImageEncryptCompress
                 s += '0';
                 //                    arr[top] = 0;
                 writeHuffmanDict(root.Left, s, dict, ref Total_Bits, stream);
+                // backtracking
+                s = s.Remove(s.Length - 1);
             }
 
             // Assign 1 to the right node and recur
@@ -441,6 +451,8 @@ namespace ImageEncryptCompress
                 s += '1';
                 //                    arr[top] = 1;
                 writeHuffmanDict(root.Right, s, dict, ref Total_Bits, stream);
+                // backtracking
+                s = s.Remove(s.Length - 1);
             }
 
             // If this is a leaf node, then we print root.Data
@@ -451,30 +463,32 @@ namespace ImageEncryptCompress
                 dict.Add(root.Pixel, s);
                 //            Color - Frequency - Huffman Representation - Total Bits
                 //          24 - 20299 - 0 - 20299 // 1 bit * 20299
-               int bittat = s.Length * root.Frequency;
+                int bittat = s.Length * root.Frequency;
 
                 stream.WriteLine(Convert.ToString(root.Pixel) + " - " // Color
                + Convert.ToString(root.Frequency) + " - " // Frequency
                + s + " - " // huffman representation
-               // s -> "110" => 3 bits * frequency of pixel
+                           // s -> "110" => 3 bits * frequency of pixel
                + Convert.ToString(bittat)); // total bits eli by representaha el pixel de
 
                 Total_Bits += bittat; //o(1)-(addition&& assignment)
-                //for (int i = 0; i < top; ++i)
-                //{
-                //  Console.Write(arr[i]);
-                //}
-                //Console.WriteLine();
+                                      //for (int i = 0; i < top; ++i)
+                                      //{
+                                      //  Console.Write(arr[i]);
+                                      //}
+                                      //Console.WriteLine();
             }
         }
 
-        
-          public static void constructHuffmanTree(RGBPixel[,] ImageMatrix)
+        // function to construct the huffman tree for the image
+        public static long constructHuffmanTree(RGBPixel[,] ImageMatrix)
         {
 
-            SortedDictionary<int, int> redFreq = new SortedDictionary<int, int>();
-            SortedDictionary<int, int> blueFreq = new SortedDictionary<int, int>();
-            SortedDictionary<int, int> greenFreq = new SortedDictionary<int, int>();
+            Dictionary<int, int> redFreq = new Dictionary<int, int>();
+            Dictionary<int, int> blueFreq = new Dictionary<int, int>();
+            Dictionary<int, int> greenFreq = new Dictionary<int, int>();
+
+            //int arr[2,5,6] =  
             //            List<Tuple<int, int>> redFreq = new List<Tuple<int, int>>();
             //            List<Tuple<int, int>> blueFreq = new List<Tuple<int, int>>();
             //            List<Tuple<int, int>> greenFreq = new List<Tuple<int, int>>();
@@ -484,6 +498,7 @@ namespace ImageEncryptCompress
 
             int Height = GetHeight(ImageMatrix);
             int Width = GetWidth(ImageMatrix);
+
             // initializing the colors bits 0 -> 255 with frequency 0
             for (int i = 0; i < 256; i++)
             {
@@ -491,36 +506,21 @@ namespace ImageEncryptCompress
                 blueFreq.Add(i, 0);
                 greenFreq.Add(i, 0);
             }
-            
+
             // calculating the frequency of each bit
             for (int i = 0; i < Height; i++)
             {
                 for (int j = 0; j < Width; j++)
                 {
-                    //                    redKey = ImageMatrix[i, j].red;
-                    //                    blueKey = ImageMatrix[i, j].blue;
-                    //                    greenKey = ImageMatrix[i, j].green;
-
-                    //                    if (!redFreq.ContainsKey(redKey))
-                    //                      redFreq.Add(redKey, 1);
-                    //                    else
                     redFreq[ImageMatrix[i, j].red]++;
-
-                    //                    if (!blueFreq.ContainsKey(blueKey))
-                    //                        blueFreq.Add(redKey, 1);
-                    //                    else
                     blueFreq[ImageMatrix[i, j].blue]++;
-
-                    //                    if (!greenFreq.ContainsKey(greenKey))
-                    //                        greenFreq.Add(redKey, 1);
-                    //                    else
                     greenFreq[ImageMatrix[i, j].green]++;
                 }
             }
 
-            List<Tuple<int, int>> redList = new List<Tuple<int, int>>();
-            List<Tuple<int, int>> blueList = new List<Tuple<int, int>>();
-            List<Tuple<int, int>> greenList = new List<Tuple<int, int>>();
+            //List<Tuple<int, int>> redList = new List<Tuple<int, int>>();
+            //List<Tuple<int, int>> blueList = new List<Tuple<int, int>>();
+            //List<Tuple<int, int>> greenList = new List<Tuple<int, int>>();
             // making a descendingly sorted frequency list carrying tuple of <bit value (0 -> 255) and bit frequency>
             //          int cnt = 255;
             //          foreach (var red in redFreq)
@@ -537,12 +537,16 @@ namespace ImageEncryptCompress
             // building the huffman tree using priority queue
 
             PriorityQueue pq_red = new PriorityQueue();
-            
-            foreach (var redPixel in redFreq)
+            PriorityQueue pq_blue = new PriorityQueue();
+            PriorityQueue pq_green = new PriorityQueue();
+
+            // construct the priority queue with the red frequency
+            foreach (KeyValuePair<int, int> redPixel in redFreq)
             {
                 // insert the item into the priority queue and construct
                 // 256 HuffmanNode kol node shayla el pixel value (0 -> 255) w shayla el frequency bta3t el pixel de
                 // w shayla (left, right) = null
+
                 if (redPixel.Value != 0)
                 {
                     HuffmanNode node = new HuffmanNode
@@ -553,12 +557,51 @@ namespace ImageEncryptCompress
                     node.Left = node.Right = null;
                     pq_red.Push(node);
                 }
+
             }
 
-          //  int number_of_red_nodes = redFreq.Count;
+            // construct the priority queue with the blue frequency
+            foreach (KeyValuePair<int, int> bluePixel in blueFreq)
+            {
+                // insert the item into the priority queue and construct
+                // 256 HuffmanNode kol node shayla el pixel value (0 -> 255) w shayla el frequency bta3t el pixel de
+                // w shayla (left, right) = null
 
-            //for (int i = 1; i < number_of_red_nodes; i++)
-            while(pq_red.Count != 1)
+                if (bluePixel.Value != 0)
+                {
+                    HuffmanNode node = new HuffmanNode
+                    {
+                        Pixel = bluePixel.Key,
+                        Frequency = bluePixel.Value
+                    };
+                    node.Left = node.Right = null;
+                    pq_blue.Push(node);
+                }
+
+            }
+
+            // construct the priority queue with the green frequency
+            foreach (KeyValuePair<int, int> greenPixel in greenFreq)
+            {
+                // insert the item into the priority queue and construct
+                // 256 HuffmanNode kol node shayla el pixel value (0 -> 255) w shayla el frequency bta3t el pixel de
+                // w shayla (left, right) = null
+
+                if (greenPixel.Value != 0)
+                {
+                    HuffmanNode node = new HuffmanNode
+                    {
+                        Pixel = greenPixel.Key,
+                        Frequency = greenPixel.Value
+                    };
+                    node.Left = node.Right = null;
+                    pq_green.Push(node);
+                }
+
+            }
+
+            // construct the huffman tree for the red channel
+            while (pq_red.Count != 1)
             {
                 HuffmanNode node = new HuffmanNode();
                 HuffmanNode smallFreq = pq_red.Pop();
@@ -570,45 +613,78 @@ namespace ImageEncryptCompress
                 pq_red.Push(node);
             }
 
-            HuffmanNode theRootNode = pq_red.Pop();
+            // construct the huffman tree for the blue channel
+            while (pq_blue.Count != 1)
+            {
+                HuffmanNode node = new HuffmanNode();
+                HuffmanNode smallFreq = pq_blue.Pop();
+                HuffmanNode largeFreq = pq_blue.Pop();
 
-            FileStream the_file_stream = new FileStream("RGB-Tree.txt", FileMode.Truncate);
+                node.Frequency = smallFreq.Frequency + largeFreq.Frequency;
+                node.Left = largeFreq;
+                node.Right = smallFreq;
+                pq_blue.Push(node);
+            }
+
+            // construct the huffman tree for the green channel
+            while (pq_green.Count != 1)
+            {
+                HuffmanNode node = new HuffmanNode();
+                HuffmanNode smallFreq = pq_green.Pop();
+                HuffmanNode largeFreq = pq_green.Pop();
+
+                node.Frequency = smallFreq.Frequency + largeFreq.Frequency;
+                node.Left = largeFreq;
+                node.Right = smallFreq;
+                pq_green.Push(node);
+            }
+
+            // get the root node of the huffman tree for each channel
+            HuffmanNode theRootNode = pq_red.Pop();
+            HuffmanNode theRootNode2 = pq_blue.Pop();
+            HuffmanNode theRootNode3 = pq_green.Pop();
+
+
+            // write the huffman tree to a file with red channel
+            FileStream the_file_stream = new FileStream(CompressionPath, FileMode.Truncate);
             StreamWriter stream = new StreamWriter(the_file_stream);
             stream.WriteLine("--R--");
             string s = null;
             long red_total_bits = 0;
-            Dictionary<int, string> red_dict = new Dictionary<int, string> ();
-            writeHuffmanDict(theRootNode, s,red_dict, ref red_total_bits, stream);
+            Dictionary<int, string> red_dict = new Dictionary<int, string>();
+            writeHuffmanDict(theRootNode, s, red_dict, ref red_total_bits, stream);
 
             if (!(red_total_bits % 8 == 0))
-                red_total_bits += 8;
-            
+                red_total_bits += (red_total_bits % 8);
+
             long red_bytes = red_total_bits / 8;
 
-            
-//            Dictionary<int, string> blue_dict = new Dictionary<int, string>();
-//            Dictionary<int, string> green_dict = new Dictionary<int, string>();
+            // write the huffman tree to a file with blue channel
+            stream.WriteLine("--B--");
+            string s2 = null;
+            long blue_total_bits = 0;
+            Dictionary<int, string> blue_dict = new Dictionary<int, string>();
+            writeHuffmanDict(theRootNode2, s2, blue_dict, ref blue_total_bits, stream);
 
+            if (!(blue_total_bits % 8 == 0))
+                blue_total_bits += (blue_total_bits % 8);
 
-            //            for (int i = 0; i < 256; i++)
-            //            {
-            //                if (blueList[i].Item2 != 0)
-            //            }
-            //            for (int i = 0; i < 256; i++)
-            //            {
-            //                if (greenList[i].Item2 != 0)
-            //            }
+            long blue_bytes = blue_total_bits / 8;
 
+            // write the huffman tree to a file with green channel
+            stream.WriteLine("--G--");
+            string s3 = null;
+            long green_total_bits = 0;
+            Dictionary<int, string> green_dict = new Dictionary<int, string>();
+            writeHuffmanDict(theRootNode3, s3, green_dict, ref green_total_bits, stream);
 
+            if (!(green_total_bits % 8 == 0))
+                green_total_bits += (green_total_bits % 8);
+
+            long green_bytes = green_total_bits / 8;
+
+            return red_bytes + blue_bytes + green_bytes;
         }
 
-
-
-
-        //        HuffmanCodes(data, freq, size);
-
-
-
-    }
     }
 }
