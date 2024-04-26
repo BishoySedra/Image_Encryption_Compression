@@ -14,7 +14,7 @@ namespace ImageEncryptCompress
         public HuffmanNode Left { get; set; }
         public HuffmanNode Right { get; set; }
     }
-    internal class PriorityQueue
+    public class PriorityQueue
     {
         private List<HuffmanNode> list;
         public int Count { get { return list.Count; } }

@@ -322,10 +322,10 @@ namespace ImageEncryptCompress
             // button7
             // 
             this.button7.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button7.Location = new System.Drawing.Point(548, 665);
+            this.button7.Location = new System.Drawing.Point(522, 665);
             this.button7.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(143, 44);
+            this.button7.Size = new System.Drawing.Size(204, 44);
             this.button7.TabIndex = 25;
             this.button7.Text = "Compress";
             this.button7.UseVisualStyleBackColor = true;

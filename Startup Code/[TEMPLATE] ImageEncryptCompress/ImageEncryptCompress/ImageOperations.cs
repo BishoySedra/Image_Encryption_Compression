@@ -34,6 +34,7 @@ namespace ImageEncryptCompress
         /// 
 
         public static string seedValue;
+        public static int seedKey;
         public static string[] keys = new string[3];
         public static string CompressionPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Another Clone\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\RGB-Tree.txt";
 
@@ -243,10 +244,11 @@ namespace ImageEncryptCompress
 
         // function to encrypt the image using the LFSR algorithm
         // O(n * m) where n is the height of the image and m is the width of the image
-        public static RGBPixel[,] Encrypt(RGBPixel[,] imageMatrix, string InitialSeed, int tapPosition)
+        public static RGBPixel[,] Encrypt(RGBPixel[,] imageMatrix, string initialSeed, int tapPosition)
         {
             // Generate LFSR keys for encryption
-            seedValue = InitialSeed;
+            seedValue = initialSeed;
+            seedKey = tapPosition;
 
             int Height = GetHeight(imageMatrix); // O(1)
             int Width = GetWidth(imageMatrix);  // O(1)
@@ -260,7 +262,6 @@ namespace ImageEncryptCompress
             {
                 for (int j = 0; j < Width; j++)
                 {
-
                     // get the LFSR keys for each color channel
                     // O(1)
                     keys = getKbitSLFSR(seedValue, tapPosition, 8);
@@ -429,18 +430,16 @@ namespace ImageEncryptCompress
             return true;
         }
 
-        // function to get the frequency of each pixel in the image
 
-
-        // function to get the frequency of each pixel in the image
-        private static void writeHuffmanDict(HuffmanNode root, string s, Dictionary<int, string> dict, ref long Total_Bits, StreamWriter stream)
+        // helper function to write the huffman tree to a file
+        private static void WriteHuffmanDict(HuffmanNode root, string s, Dictionary<int, string> dict, ref long Total_Bits, StreamWriter stream)
         {
             // Assign 0 to the left node and recur
             if (root.Left != null)
             {
                 s += '0';
                 //                    arr[top] = 0;
-                writeHuffmanDict(root.Left, s, dict, ref Total_Bits, stream);
+                WriteHuffmanDict(root.Left, s, dict, ref Total_Bits, stream);
                 // backtracking
                 s = s.Remove(s.Length - 1);
             }
@@ -450,7 +449,7 @@ namespace ImageEncryptCompress
             {
                 s += '1';
                 //                    arr[top] = 1;
-                writeHuffmanDict(root.Right, s, dict, ref Total_Bits, stream);
+                WriteHuffmanDict(root.Right, s, dict, ref Total_Bits, stream);
                 // backtracking
                 s = s.Remove(s.Length - 1);
             }
@@ -481,20 +480,12 @@ namespace ImageEncryptCompress
         }
 
         // function to construct the huffman tree for the image
-        public static long constructHuffmanTree(RGBPixel[,] ImageMatrix)
+        public static KeyValuePair<long, double> ConstructHuffmanTree(RGBPixel[,] ImageMatrix)
         {
 
             Dictionary<int, int> redFreq = new Dictionary<int, int>();
             Dictionary<int, int> blueFreq = new Dictionary<int, int>();
             Dictionary<int, int> greenFreq = new Dictionary<int, int>();
-
-            //int arr[2,5,6] =  
-            //            List<Tuple<int, int>> redFreq = new List<Tuple<int, int>>();
-            //            List<Tuple<int, int>> blueFreq = new List<Tuple<int, int>>();
-            //            List<Tuple<int, int>> greenFreq = new List<Tuple<int, int>>();
-            //            SortedDictionary<int, int> redTree = new SortedDictionary<int, int>();
-            //            SortedDictionary<int, int> blueTree = new SortedDictionary<int, int>();
-            //            SortedDictionary<int, int> greenTree = new SortedDictionary<int, int>();
 
             int Height = GetHeight(ImageMatrix);
             int Width = GetWidth(ImageMatrix);
@@ -518,24 +509,7 @@ namespace ImageEncryptCompress
                 }
             }
 
-            //List<Tuple<int, int>> redList = new List<Tuple<int, int>>();
-            //List<Tuple<int, int>> blueList = new List<Tuple<int, int>>();
-            //List<Tuple<int, int>> greenList = new List<Tuple<int, int>>();
-            // making a descendingly sorted frequency list carrying tuple of <bit value (0 -> 255) and bit frequency>
-            //          int cnt = 255;
-            //          foreach (var red in redFreq)
-            //                redList[cnt--] = Tuple.Create(red.Key, red.Value);
-
-            //            cnt = 255;
-            //            foreach (var blue in redFreq)
-            //                blueList[cnt--] = Tuple.Create(blue.Key, blue.Value);
-
-            //            cnt = 255;
-            //            foreach (var green in redFreq)
-            //                greenList[cnt--] = Tuple.Create(green.Key, green.Value);
-
             // building the huffman tree using priority queue
-
             PriorityQueue pq_red = new PriorityQueue();
             PriorityQueue pq_blue = new PriorityQueue();
             PriorityQueue pq_green = new PriorityQueue();
@@ -644,46 +618,67 @@ namespace ImageEncryptCompress
             HuffmanNode theRootNode2 = pq_blue.Pop();
             HuffmanNode theRootNode3 = pq_green.Pop();
 
-
-            // write the huffman tree to a file with red channel
+            // declare the file stream and the stream writer
             FileStream the_file_stream = new FileStream(CompressionPath, FileMode.Truncate);
             StreamWriter stream = new StreamWriter(the_file_stream);
-            stream.WriteLine("--R--");
+
+            // write the initial seed and tap position to the file
+            stream.WriteLine("Initial Seed: " + seedValue);
+            stream.WriteLine("Tap Position: " + seedKey);
+
+            stream.WriteLine("====================================");
+
+            // write the huffman tree to a file with red channel
+            stream.WriteLine("Red - Frequency - Huffman Representation - Total Bits");
             string s = null;
             long red_total_bits = 0;
             Dictionary<int, string> red_dict = new Dictionary<int, string>();
-            writeHuffmanDict(theRootNode, s, red_dict, ref red_total_bits, stream);
-
-            if (!(red_total_bits % 8 == 0))
-                red_total_bits += (red_total_bits % 8);
-
+            WriteHuffmanDict(theRootNode, s, red_dict, ref red_total_bits, stream);
+            red_total_bits += (red_total_bits % 8);
             long red_bytes = red_total_bits / 8;
 
-            // write the huffman tree to a file with blue channel
-            stream.WriteLine("--B--");
-            string s2 = null;
-            long blue_total_bits = 0;
-            Dictionary<int, string> blue_dict = new Dictionary<int, string>();
-            writeHuffmanDict(theRootNode2, s2, blue_dict, ref blue_total_bits, stream);
-
-            if (!(blue_total_bits % 8 == 0))
-                blue_total_bits += (blue_total_bits % 8);
-
-            long blue_bytes = blue_total_bits / 8;
+            stream.WriteLine("====================================");
 
             // write the huffman tree to a file with green channel
-            stream.WriteLine("--G--");
+            stream.WriteLine("Green - Frequency - Huffman Representation - Total Bits");
             string s3 = null;
             long green_total_bits = 0;
             Dictionary<int, string> green_dict = new Dictionary<int, string>();
-            writeHuffmanDict(theRootNode3, s3, green_dict, ref green_total_bits, stream);
-
-            if (!(green_total_bits % 8 == 0))
-                green_total_bits += (green_total_bits % 8);
-
+            WriteHuffmanDict(theRootNode3, s3, green_dict, ref green_total_bits, stream);
+            green_total_bits += (green_total_bits % 8);
             long green_bytes = green_total_bits / 8;
 
-            return red_bytes + blue_bytes + green_bytes;
+            stream.WriteLine("====================================");
+
+
+            // write the huffman tree to a file with blue channel
+            stream.WriteLine("Blue - Frequency - Huffman Representation - Total Bits");
+            string s2 = null;
+            long blue_total_bits = 0;
+            Dictionary<int, string> blue_dict = new Dictionary<int, string>();
+            WriteHuffmanDict(theRootNode2, s2, blue_dict, ref blue_total_bits, stream);
+            blue_total_bits += (blue_total_bits % 8);
+            long blue_bytes = blue_total_bits / 8;
+
+            stream.WriteLine("====================================");
+
+
+            // write the total bytes of the image
+            long total_bytes = red_bytes + blue_bytes + green_bytes;
+            stream.WriteLine("Total Bytes: " + total_bytes);
+
+            // write the compression ratio of the image
+            long total_bits = red_total_bits + blue_total_bits + green_total_bits;
+            long image_size = Height * Width * 24; // product by 24 for the 3 channels (red, green, blue) and each channel has 8 bits (1 byte)
+            double compression_ratio = (double)total_bits / image_size ;
+
+            stream.WriteLine("Compression Ratio: " + compression_ratio * 100 + "%");
+
+            stream.Close();
+
+            KeyValuePair<long, double> result = new KeyValuePair<long, double>(total_bytes, compression_ratio * 100);
+
+            return result;
         }
 
     }

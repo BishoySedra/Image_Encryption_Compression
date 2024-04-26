@@ -223,10 +223,10 @@ namespace ImageEncryptCompress
         private void button7_Click(object sender, EventArgs e)
         {
             // construct the huffman tree function
-            long result = ImageOperations.constructHuffmanTree(ImageMatrix);
+            KeyValuePair<long, double> result = ImageOperations.ConstructHuffmanTree(ImageMatrix);
 
             // show message box for the result
-            MessageBox.Show("Result: " + result);
+            MessageBox.Show("Compression Ratio: " + result.Value + "%\nCompression Output: " + result.Key + " bytes");
         }
     }
 }
