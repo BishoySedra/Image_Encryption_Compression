@@ -1,4 +1,4 @@
-Initial Seed: 11101
+Initial Seed: 
 Tap Position: 0
 ====================================
 Red - Frequency - Huffman Representation - Total Bits
