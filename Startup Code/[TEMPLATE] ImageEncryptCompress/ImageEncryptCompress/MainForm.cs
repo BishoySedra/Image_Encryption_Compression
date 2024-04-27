@@ -50,12 +50,22 @@ namespace ImageEncryptCompress
             sw.Start();
 
             ImageMatrix = ImageOperations.Encrypt(ImageMatrix, initialSeed, tapPosition);
-            
+
             // stop the stop watch
             sw.Stop();
 
-            // show the time of the operation in the message box
-            MessageBox.Show("Time: " + sw.ElapsedMilliseconds + " ms");
+
+            // if the time of the operation is not zero
+            if (sw.ElapsedMilliseconds == 0)
+            {
+                // show the time of the operation in the message box
+                MessageBox.Show("Already Encrypted!");
+            }
+            else { 
+                // show the time of the operation in the message box
+                MessageBox.Show("Time: " + sw.ElapsedMilliseconds + " ms");
+            }
+
 
             ImageOperations.DisplayImage(ImageMatrix, pictureBox2);
 
@@ -107,8 +117,16 @@ namespace ImageEncryptCompress
             // stop the stop watch
             sw.Stop();
 
-            // show the time of the operation in the message box
-            MessageBox.Show("Time: " + sw.ElapsedMilliseconds + " ms");
+            if (sw.ElapsedMilliseconds == 0)
+            {
+                // show the time of the operation in the message box
+                MessageBox.Show("Already Decrypted!");
+            }
+            else
+            {
+                // show the time of the operation in the message box
+                MessageBox.Show("Time: " + sw.ElapsedMilliseconds + " ms");
+            }
 
             ImageOperations.DisplayImage(ImageMatrix, pictureBox2);
 
@@ -141,8 +159,16 @@ namespace ImageEncryptCompress
             // stop the stop watch
             sw.Stop();
 
-            // show the time of the operation in the message box
-            MessageBox.Show("Time: " + sw.ElapsedMilliseconds + " ms");
+            if (sw.ElapsedMilliseconds == 0)
+            {
+                // show the time of the operation in the message box
+                MessageBox.Show("Already Encrypted!");
+            }
+            else
+            {
+                // show the time of the operation in the message box
+                MessageBox.Show("Time: " + sw.ElapsedMilliseconds + " ms");
+            }
 
             ImageOperations.DisplayImage(ImageMatrix, pictureBox1);
         }
@@ -166,8 +192,16 @@ namespace ImageEncryptCompress
             // stop the stop watch
             sw.Stop();
 
-            // show the time of the operation in the message box
-            MessageBox.Show("Time: " + sw.ElapsedMilliseconds + " ms");
+            if (sw.ElapsedMilliseconds == 0)
+            {
+                // show the time of the operation in the message box
+                MessageBox.Show("Already Decrypted!");
+            }
+            else
+            {
+                // show the time of the operation in the message box
+                MessageBox.Show("Time: " + sw.ElapsedMilliseconds + " ms");
+            }
 
             ImageOperations.DisplayImage(ImageMatrix, pictureBox1);
         }

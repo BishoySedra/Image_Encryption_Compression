@@ -249,6 +249,10 @@ namespace ImageEncryptCompress
         {
             if (!isEncrypted)
             {
+
+                // convert the initial seed to binary
+                initialSeed = StringToBinary(initialSeed);
+
                 // Generate LFSR keys for encryption
                 seedValue = initialSeed;
                 seedKey = tapPosition;
@@ -318,6 +322,9 @@ namespace ImageEncryptCompress
 
             if (isEncrypted)
             {
+                // convert the initial seed to binary
+                InitialSeed = StringToBinary(InitialSeed);
+
                 //Generate LFSR keys for decryption
                 seedValue = InitialSeed;
                 int Height = GetHeight(imageMatrix); // O(1)
@@ -691,5 +698,42 @@ namespace ImageEncryptCompress
             return result;
         }
 
+        // [BONUS] function to convert the string to binary
+        // O(n) where n is the length of the string
+        public static string StringToBinary(string data)
+        {
+            string binary = string.Empty;
+            int data_size = data.Length;
+
+            // 001021
+            // 00101
+
+            // if it has 0's or 1's in data string, store it in binary
+            foreach (char c in data)
+            {
+                if (c == '0' || c == '1')
+                {
+                    binary += c;
+                }
+            }
+
+            int binary_size = binary.Length;
+
+            if (binary_size == data_size)
+            {
+                return binary;
+            }
+
+            string converted_result = String.Empty;
+            for (int i = 0; i < data_size; i++)
+            {
+                // convert the character to binary
+                string binary_char = Convert.ToString(data[i], 2);
+                Console.WriteLine("Character: " + data[i] + " Binary: " + binary_char);
+                converted_result += binary_char;
+            }
+
+            return converted_result;
+        }
     }
 }
