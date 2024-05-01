@@ -60,6 +60,8 @@ namespace ImageEncryptCompress
             this.label10 = new System.Windows.Forms.Label();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.panel1.SuspendLayout();
@@ -205,7 +207,6 @@ namespace ImageEncryptCompress
             this.txtGaussSigma.Name = "txtGaussSigma";
             this.txtGaussSigma.Size = new System.Drawing.Size(184, 31);
             this.txtGaussSigma.TabIndex = 14;
-            this.txtGaussSigma.Text = "1";
             this.txtGaussSigma.TextChanged += new System.EventHandler(this.txtGaussSigma_TextChanged);
             // 
             // panel1
@@ -392,9 +393,8 @@ namespace ImageEncryptCompress
             this.label9.Location = new System.Drawing.Point(971, 864);
             this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(233, 29);
+            this.label9.Size = new System.Drawing.Size(0, 29);
             this.label9.TabIndex = 30;
-            this.label9.Text = "Attacking Result...";
             this.label9.Click += new System.EventHandler(this.label9_Click);
             // 
             // label10
@@ -404,9 +404,8 @@ namespace ImageEncryptCompress
             this.label10.Location = new System.Drawing.Point(1182, 744);
             this.label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(174, 29);
+            this.label10.Size = new System.Drawing.Size(0, 29);
             this.label10.TabIndex = 31;
-            this.label10.Text = "Image Status";
             this.label10.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.label10.Click += new System.EventHandler(this.label10_Click);
             // 
@@ -432,11 +431,36 @@ namespace ImageEncryptCompress
             this.label11.TabIndex = 33;
             this.label11.Text = "Enter number of bits";
             // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.Location = new System.Drawing.Point(1467, 564);
+            this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(0, 29);
+            this.label12.TabIndex = 34;
+            this.label12.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label13.Location = new System.Drawing.Point(1467, 618);
+            this.label13.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(0, 29);
+            this.label13.TabIndex = 35;
+            this.label13.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.label13.Click += new System.EventHandler(this.label13_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1788, 1050);
+            this.Controls.Add(this.label13);
+            this.Controls.Add(this.label12);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.label10);
@@ -516,6 +540,8 @@ namespace ImageEncryptCompress
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label13;
     }
 }
 

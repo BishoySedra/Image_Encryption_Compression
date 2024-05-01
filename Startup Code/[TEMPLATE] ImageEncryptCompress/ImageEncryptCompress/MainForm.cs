@@ -34,10 +34,20 @@ namespace ImageEncryptCompress
             txtWidth.Text = ImageOperations.GetWidth(ImageMatrix).ToString();
             txtHeight.Text = ImageOperations.GetHeight(ImageMatrix).ToString();
 
-            label10.Text = "Image Status";
-            label9.Text = "Attacking Result...";
+            // clear the text box for the number of bits
             textBox2.Text = "";
 
+            // label for the image 1 status 
+            label12.Text = "";
+
+            // label for the image 2 status
+            label13.Text = "";
+
+            //  label for the desired image status
+            label10.Text = "";
+
+            // label for attacking status
+            label9.Text = "";
         }
 
         private void btnGaussSmooth_Click(object sender, EventArgs e)
@@ -67,7 +77,8 @@ namespace ImageEncryptCompress
                 // show the time of the operation in the message box
                 MessageBox.Show("Already Encrypted!");
             }
-            else { 
+            else
+            {
                 // show the time of the operation in the message box
                 MessageBox.Show("Time: " + sw.ElapsedMilliseconds + " ms");
             }
@@ -132,7 +143,7 @@ namespace ImageEncryptCompress
             {
                 // show the time of the operation in the message box
             }
-                MessageBox.Show("Time: " + sw.ElapsedMilliseconds + " ms");
+            MessageBox.Show("Time: " + sw.ElapsedMilliseconds + " ms");
 
             ImageOperations.DisplayImage(ImageMatrix, pictureBox2);
 
@@ -222,6 +233,9 @@ namespace ImageEncryptCompress
                 ImageMatrix = ImageOperations.OpenImage(OpenedFilePath);
                 ImageOperations.DisplayImage(ImageMatrix, pictureBox1);
             }
+
+            // change label12 text
+            label12.Text = "Image 1 loaded Successfully!";
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -234,13 +248,13 @@ namespace ImageEncryptCompress
                 ImageMatrix2 = ImageOperations.OpenImage(OpenedFilePath);
                 ImageOperations.DisplayImage(ImageMatrix2, pictureBox2);
             }
+
+            // change label13 text
+            label13.Text = "Image 2 loaded Successfully!";
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
-            // getting the intial seed and tap position
-            string initialSeed = txtGaussSigma.Text;
-            int tapPosition = int.Parse(textBox1.Text);
 
             // testing the identicality of the two images
             bool identical = ImageOperations.TestIdenticality(ImageMatrix, ImageMatrix2);
@@ -248,11 +262,11 @@ namespace ImageEncryptCompress
             if (identical)
             {
                 MessageBox.Show("IDENTICAL!!");
+                return;
             }
-            else
-            {
-                MessageBox.Show("NOT IDENTICAL!!");
-            }
+
+            MessageBox.Show("NOT IDENTICAL!!");
+
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -290,7 +304,9 @@ namespace ImageEncryptCompress
             {
                 label10.Text = "Image Loaded Successfully!";
             }
-            
+
+            // change attacking status text
+            label9.Text = "Attacking Running...";
 
         }
 
@@ -301,18 +317,20 @@ namespace ImageEncryptCompress
 
         private void button9_Click(object sender, EventArgs e)
         {
+
             // taking input from textBox2
             int numberOfBits = int.Parse(textBox2.Text);
 
             // attack the image with the desired number of bits
-            Tuple<string,int> result = ImageOperations.Attack(ImageMatrix, DesiredImageMatrix, numberOfBits);
+            Tuple<string, int> result = ImageOperations.Attack(ImageMatrix, DesiredImageMatrix, numberOfBits);
 
             // show the result in the message box
             if (result != null)
             {
                 label9.Text = "Attack Successful!\n Seed Value = " + result.Item1 + "\n Tap Position = " + result.Item2;
             }
-            else { 
+            else
+            {
                 label9.Text = "Attack Failed!";
             }
 
@@ -320,10 +338,16 @@ namespace ImageEncryptCompress
 
         private void textBox2_TextChanged(object sender, EventArgs e)
         {
-
+            // change attacking status text
+            label9.Text = "Attacking Running...";
         }
 
         private void label9_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label13_Click(object sender, EventArgs e)
         {
 
         }

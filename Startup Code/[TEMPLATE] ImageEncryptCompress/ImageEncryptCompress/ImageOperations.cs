@@ -248,64 +248,64 @@ namespace ImageEncryptCompress
         public static RGBPixel[,] EncryptDecrypt(RGBPixel[,] imageMatrix, string initialSeed, int tapPosition)
         {
 
-                // convert the initial seed to binary
-                initialSeed = StringToBinary(initialSeed);
+            // convert the initial seed to binary
+            initialSeed = StringToBinary(initialSeed);
 
-                // Generate LFSR keys for encryption
-                seedValue = initialSeed;
-                seedKey = tapPosition;
+            // Generate LFSR keys for encryption
+            seedValue = initialSeed;
+            seedKey = tapPosition;
 
-                int Height = GetHeight(imageMatrix); // O(1)
-                int Width = GetWidth(imageMatrix);  // O(1)
+            int Height = GetHeight(imageMatrix); // O(1)
+            int Width = GetWidth(imageMatrix);  // O(1)
 
-                // Ensure that the dimensions of the encrypted image match the dimensions of the original image
-                RGBPixel[,] encryptedImage = new RGBPixel[Height, Width];
+            // Ensure that the dimensions of the encrypted image match the dimensions of the original image
+            RGBPixel[,] encryptedImage = new RGBPixel[Height, Width];
 
-                // iterate over the image matrix and encrypt each pixel
-                // O(n * m) where n is the height of the image and m is the width of the image
-                for (int i = 0; i < Height; i++)
+            // iterate over the image matrix and encrypt each pixel
+            // O(n * m) where n is the height of the image and m is the width of the image
+            for (int i = 0; i < Height; i++)
+            {
+                for (int j = 0; j < Width; j++)
                 {
-                    for (int j = 0; j < Width; j++)
-                    {
-                        // get the LFSR keys for each color channel
-                        // O(1)
-                        keys = getKbitSLFSR(seedValue, tapPosition, 8);
+                    // get the LFSR keys for each color channel
+                    // O(1)
+                    keys = getKbitSLFSR(seedValue, tapPosition, 8);
 
-                        // get the RGB values of the pixel
-                        // O(1)
-                        byte red = imageMatrix[i, j].red;
-                        byte green = imageMatrix[i, j].green;
-                        byte blue = imageMatrix[i, j].blue;
+                    // get the RGB values of the pixel
+                    // O(1)
+                    byte red = imageMatrix[i, j].red;
+                    byte green = imageMatrix[i, j].green;
+                    byte blue = imageMatrix[i, j].blue;
 
-                        // convert the RGB values to binary strings
-                        // O(1)
-                        string redBinary = convertToBinary(ByteToInt(red));
-                        string greenBinary = convertToBinary(ByteToInt(green));
-                        string blueBinary = convertToBinary(ByteToInt(blue));
+                    // convert the RGB values to binary strings
+                    // O(1)
+                    string redBinary = convertToBinary(ByteToInt(red));
+                    string greenBinary = convertToBinary(ByteToInt(green));
+                    string blueBinary = convertToBinary(ByteToInt(blue));
 
-                        // encrypt the RGB values using the LFSR keys
-                        // O(1)
-                        string encryptedRed = XOR(redBinary, keys[0]);
-                        string encryptedGreen = XOR(greenBinary, keys[1]);
-                        string encryptedBlue = XOR(blueBinary, keys[2]);
+                    // encrypt the RGB values using the LFSR keys
+                    // O(1)
+                    string encryptedRed = XOR(redBinary, keys[0]);
+                    string encryptedGreen = XOR(greenBinary, keys[1]);
+                    string encryptedBlue = XOR(blueBinary, keys[2]);
 
-                        // convert the encrypted RGB values to bytes
-                        // O(1)
-                        byte encryptedRedByte = convertToByte(encryptedRed);
-                        byte encryptedGreenByte = convertToByte(encryptedGreen);
-                        byte encryptedBlueByte = convertToByte(encryptedBlue);
+                    // convert the encrypted RGB values to bytes
+                    // O(1)
+                    byte encryptedRedByte = convertToByte(encryptedRed);
+                    byte encryptedGreenByte = convertToByte(encryptedGreen);
+                    byte encryptedBlueByte = convertToByte(encryptedBlue);
 
-                        // update the encrypted image matrix with the encrypted pixel
-                        // O(1)
-                        encryptedImage[i, j].red = encryptedRedByte;
-                        encryptedImage[i, j].green = encryptedGreenByte;
-                        encryptedImage[i, j].blue = encryptedBlueByte;
-                    }
+                    // update the encrypted image matrix with the encrypted pixel
+                    // O(1)
+                    encryptedImage[i, j].red = encryptedRedByte;
+                    encryptedImage[i, j].green = encryptedGreenByte;
+                    encryptedImage[i, j].blue = encryptedBlueByte;
                 }
+            }
 
-                
 
-                return encryptedImage;
+
+            return encryptedImage;
         }
 
         // function to decrypt the image using the LFSR algorithm
@@ -424,11 +424,18 @@ namespace ImageEncryptCompress
             int Height2 = ImageMatrix2.GetLength(0);
             int Width2 = ImageMatrix2.GetLength(1);
 
+            // checking if the dimensions of the two images are not the same
             if (Height1 != Height2 || Width1 != Width2)
             {
                 return false;
             }
 
+
+            //if (ImageMatrix1 != ImageMatrix2) { 
+            //    return false;
+            //}
+
+            // checking the identicality of the two images for each pixel
             for (int i = 0; i < Height1; i++)
             {
                 for (int j = 0; j < Width1; j++)
@@ -700,9 +707,6 @@ namespace ImageEncryptCompress
             string binary = string.Empty;
             int data_size = data.Length;
 
-            // 001021
-            // 00101
-
             // if it has 0's or 1's in data string, store it in binary
             foreach (char c in data)
             {
@@ -733,6 +737,7 @@ namespace ImageEncryptCompress
 
         public static string[] GetCombinations(int length) // θ(2^length)
         {
+
             // get the total number of combinations
             int total = (int)Math.Pow(2, length);
 
@@ -763,75 +768,7 @@ namespace ImageEncryptCompress
             return combinations;
         }
 
-        //public static RGBPixel[,] DecryptAttack(RGBPixel[,] imageMatrix, string InitialSeed, int tapPosition)
-        //{
-        //    //recall the encrypption function to get the seed value
-        //    //O(n* m) where n is the height of the image and m is the width of the image
 
-
-        //    // convert the initial seed to binary
-        //    InitialSeed = StringToBinary(InitialSeed);
-
-        //    //Generate LFSR keys for decryption
-        //    seedValue = InitialSeed;
-        //    int Height = GetHeight(imageMatrix); // O(1)
-        //    int Width = GetWidth(imageMatrix);  // O(1)
-
-        //    // Ensure that the dimensions of the decrypted image match the dimensions of the original image
-        //    RGBPixel[,] decryptedImage = new RGBPixel[Height, Width];
-
-        //    // iterate over the image matrix and decrypt each pixel
-        //    // O(n * m) where n is the height of the image and m is the width of the image
-
-        //    for (int i = 0; i < Height; i++)
-        //    {
-        //        for (int j = 0; j < Width; j++)
-        //        {
-        //            // get the LFSR keys
-        //            // O(1)
-        //            keys = getKbitSLFSR(seedValue, tapPosition, 8);
-
-        //            // get the RGB values of the pixel
-        //            // O(1)
-        //            byte red = imageMatrix[i, j].red;
-        //            byte green = imageMatrix[i, j].green;
-        //            byte blue = imageMatrix[i, j].blue;
-
-        //            // convert the RGB values to binary strings
-        //            // O(1)
-        //            string redBinary = convertToBinary(ByteToInt(red));
-        //            string greenBinary = convertToBinary(ByteToInt(green));
-        //            string blueBinary = convertToBinary(ByteToInt(blue));
-
-        //            // decrypt the RGB values using the LFSR keys
-        //            // O(1)
-        //            string decryptedRed = XOR(redBinary, keys[0]);
-        //            string decryptedGreen = XOR(greenBinary, keys[1]);
-        //            string decryptedBlue = XOR(blueBinary, keys[2]);
-
-        //            // convert the decrypted RGB values to bytes
-        //            // O(1)
-        //            byte decryptedRedByte = convertToByte(decryptedRed);
-        //            byte decryptedGreenByte = convertToByte(decryptedGreen);
-        //            byte decryptedBlueByte = convertToByte(decryptedBlue);
-
-        //            // update the decrypted image matrix with the decrypted pixel
-        //            // O(1)
-        //            decryptedImage[i, j].red = decryptedRedByte;
-        //            decryptedImage[i, j].green = decryptedGreenByte;
-        //            decryptedImage[i, j].blue = decryptedBlueByte;
-        //        }
-
-        //        isEncrypted = false;
-
-
-        //        return decryptedImage;
-
-        //    }
-
-        //    return imageMatrix;
-        //}
-        
         // [BONUS] function to attack the encrypted image
         public static Tuple<string, int> Attack(RGBPixel[,] EncryptedImageMatrix, RGBPixel[,] DesiredImageMatrix, int Nbits) // O(2^n * n * m)
         {
