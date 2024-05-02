@@ -1,17 +1,17 @@
-Initial Seed: 0
-Tap Position: 0
+Initial Seed: 1001
+Tap Position: 1
 ====================================
 Red - Frequency - Huffman Representation - Total Bits
-255 - 20299 - 0 - 20299
-0 - 19701 - 1 - 19701
+24 - 20299 - 0 - 20299
+231 - 19701 - 1 - 19701
 ====================================
 Green - Frequency - Huffman Representation - Total Bits
-0 - 30199 - 0 - 30199
-255 - 9801 - 1 - 9801
+158 - 30199 - 0 - 30199
+97 - 9801 - 1 - 9801
 ====================================
 Blue - Frequency - Huffman Representation - Total Bits
-0 - 30100 - 0 - 30100
-255 - 9900 - 1 - 9900
+121 - 30100 - 0 - 30100
+134 - 9900 - 1 - 9900
 ====================================
 Total Bytes: 15000
 Compression Ratio: 12.5%

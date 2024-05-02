@@ -38,7 +38,7 @@ namespace ImageEncryptCompress
         public static bool isEncrypted = false;
         public static string[] keys = new string[3];
         public static string CompressionPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\RGB-Tree.txt";
-
+        public static string BinaryPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\Binary.bin";
         public static RGBPixel[,] OpenImage(string ImagePath)
         {
             Bitmap original_bm = new Bitmap(ImagePath);
@@ -695,9 +695,187 @@ namespace ImageEncryptCompress
 
             stream.Close();
 
+            // declare binary file stream and binary writer
+            FileStream binary_file_stream = new FileStream(BinaryPath, FileMode.Create);
+            BinaryWriter binary_writer = new BinaryWriter(binary_file_stream);
+
+            // write the seed value and tap position to the binary file
+            binary_writer.Write(seedValue);
+            binary_writer.Write(seedKey);
+
+            // write the huffman tree to the binary file
+            binary_writer.Write(red_dict.Count);
+            foreach (KeyValuePair<int, string> entry in red_dict)
+            {
+                binary_writer.Write(entry.Key);
+                binary_writer.Write(entry.Value);
+            }
+
+            binary_writer.Write(blue_dict.Count);
+            foreach (KeyValuePair<int, string> entry in blue_dict)
+            {
+                binary_writer.Write(entry.Key);
+                binary_writer.Write(entry.Value);
+            }
+
+            binary_writer.Write(green_dict.Count);
+            foreach (KeyValuePair<int, string> entry in green_dict)
+            {
+                binary_writer.Write(entry.Key);
+                binary_writer.Write(entry.Value);
+            }
+
+            // write the total bytes of the image to the binary file
+            binary_writer.Write(total_bytes);
+
+            // write the compression ratio of the image to the binary file
+            binary_writer.Write(compression_ratio);
+
+            // write the width and height of the image to the binary file
+            binary_writer.Write(Width);
+            binary_writer.Write(Height);
+
+            binary_writer.Close();
+
             KeyValuePair<long, double> result = new KeyValuePair<long, double>(total_bytes, compression_ratio * 100);
 
             return result;
+        }
+
+        // function to decompress the image using the huffman tree and the binary file
+        public static RGBPixel[,] DecompressImage(string FilePath)
+        {
+            // declare the binary file stream and the binary reader
+            FileStream binary_file_stream = new FileStream(FilePath, FileMode.Open);
+            BinaryReader binary_reader = new BinaryReader(binary_file_stream);
+
+            // read the seed value and tap position from the binary file
+            seedValue = binary_reader.ReadString();
+            seedKey = binary_reader.ReadInt32();
+
+            // read the huffman tree from the binary file
+            int red_dict_size = binary_reader.ReadInt32();
+            Dictionary<int, string> red_dict = new Dictionary<int, string>();
+
+            for (int i = 0; i < red_dict_size; i++)
+            {
+                int key = binary_reader.ReadInt32();
+                string value = binary_reader.ReadString();
+                red_dict.Add(key, value);
+            }
+
+            int blue_dict_size = binary_reader.ReadInt32();
+            Dictionary<int, string> blue_dict = new Dictionary<int, string>();
+
+            for (int i = 0; i < blue_dict_size; i++)
+            {
+                int key = binary_reader.ReadInt32();
+                string value = binary_reader.ReadString();
+                blue_dict.Add(key, value);
+            }
+
+            int green_dict_size = binary_reader.ReadInt32();
+
+            Dictionary<int, string> green_dict = new Dictionary<int, string>();
+
+            for (int i = 0; i < green_dict_size; i++)
+            {
+                int key = binary_reader.ReadInt32();
+                string value = binary_reader.ReadString();
+                green_dict.Add(key, value);
+            }
+
+            // read the total bytes of the image from the binary file
+            long total_bytes = binary_reader.ReadInt64();
+
+            // read the compression ratio of the image from the binary file
+            double compression_ratio = binary_reader.ReadDouble();
+
+            // read the width and height of the image from the binary file
+            int Width = binary_reader.ReadInt32();
+            int Height = binary_reader.ReadInt32();
+
+            // declare the image matrix
+
+            RGBPixel[,] ImageMatrix = new RGBPixel[Height, Width];
+
+            // read the image matrix from the binary file
+
+            for (int i = 0; i < Height; i++)
+            {
+                for (int j = 0; j < Width; j++)
+                {
+                    // read the red channel from the binary file
+                    int red = 0;
+                    string red_code = String.Empty;
+                    while (true)
+                    {
+                        red_code += binary_reader.ReadChar();
+                        foreach (KeyValuePair<int, string> entry in red_dict)
+                        {
+                            if (entry.Value == red_code)
+                            {
+                                red = entry.Key;
+                                break;
+                            }
+                        }
+                        if (red != 0)
+                        {
+                            break;
+                        }
+                    }
+
+                    // read the green channel from the binary file
+                    int green = 0;
+                    string green_code = String.Empty;
+                    while (true)
+                    {
+                        green_code += binary_reader.ReadChar();
+                        foreach (KeyValuePair<int, string> entry in green_dict)
+                        {
+                            if (entry.Value == green_code)
+                            {
+                                green = entry.Key;
+                                break;
+                            }
+                        }
+                        if (green != 0)
+                        {
+                            break;
+                        }
+                    }
+
+                    // read the blue channel from the binary file
+                    int blue = 0;
+                    string blue_code = String.Empty;
+                    while (true)
+                    {
+                        blue_code += binary_reader.ReadChar();
+                        foreach (KeyValuePair<int, string> entry in blue_dict)
+                        {
+                            if (entry.Value == blue_code)
+                            {
+                                blue = entry.Key;
+                                break;
+                            }
+                        }
+                        if (blue != 0)
+                        {
+                            break;
+                        }
+                    }
+
+                    // update the image matrix with the pixel
+                    ImageMatrix[i, j].red = (byte)red;
+                    ImageMatrix[i, j].green = (byte)green;
+                    ImageMatrix[i, j].blue = (byte)blue;
+                }
+            }
+
+            // close the binary reader
+            binary_reader.Close();
+
+            return ImageMatrix;
         }
 
         // [BONUS] function to convert the string to binary
