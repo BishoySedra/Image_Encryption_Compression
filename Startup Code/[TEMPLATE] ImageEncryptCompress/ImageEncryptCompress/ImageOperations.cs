@@ -37,9 +37,11 @@ namespace ImageEncryptCompress
         public static int seedKey;
         public static bool isEncrypted = false;
         public static string CompressionPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\RGB-Tree.txt";
-        public static string BinaryPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\Binary.bin";
+        public static string BinaryWriterPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\Binary.bin";
+        public static string BinaryReaderPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Decompression\\com.txt";
         public static string EncryptedImagePath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Encryption\\MY_OUTPUT\\Encryption\\Encrypted.bmp";
         public static string DecryptedImagePath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Encryption\\MY_OUTPUT\\Decryption\\Decrypted.bmp";
+        public static string DecompressedImagePath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Decompression\\Decompressed.bmp";
 
         public static RGBPixel[,] OpenImage(string ImagePath)
         {
@@ -193,8 +195,8 @@ namespace ImageEncryptCompress
                 initialSeed = (initialSeed.Substring(1) + newBit);
 
                 // printing the new seed
-                Console.Write(i + 1 + " ==> ");
-                Console.WriteLine(initialSeed);
+                //Console.Write(i + 1 + " ==> ");
+                //Console.WriteLine(initialSeed);
             }
 
             seedValue = initialSeed;
@@ -206,7 +208,6 @@ namespace ImageEncryptCompress
         // O(n * m) where n is the height of the image and m is the width of the image
         public static RGBPixel[,] EncryptDecryptImage(RGBPixel[,] imageMatrix, string initialSeed, int tapPosition)
         {
-
             // convert the initial seed to binary
             initialSeed = BONUS_Functions.AlphanumericConvertion(initialSeed);
 
@@ -216,7 +217,7 @@ namespace ImageEncryptCompress
 
             int Height = GetHeight(imageMatrix); // O(1)
             int Width = GetWidth(imageMatrix);  // O(1)
-            string[] keys = new string[3];
+            string[] keys;
 
             // Ensure that the dimensions of the encrypted image match the dimensions of the original image
             RGBPixel[,] encryptedImage = new RGBPixel[Height, Width];
@@ -263,8 +264,6 @@ namespace ImageEncryptCompress
                 }
             }
 
-
-
             return encryptedImage;
         }
 
@@ -310,6 +309,7 @@ namespace ImageEncryptCompress
                 s += '0';
                 //                    arr[top] = 0;
                 WriteHuffmanDict(root.Left, s, dict, ref Total_Bits, stream);
+
                 // backtracking
                 s = s.Remove(s.Length - 1);
             }
@@ -320,6 +320,7 @@ namespace ImageEncryptCompress
                 s += '1';
                 //                    arr[top] = 1;
                 WriteHuffmanDict(root.Right, s, dict, ref Total_Bits, stream);
+
                 // backtracking
                 s = s.Remove(s.Length - 1);
             }
@@ -334,22 +335,22 @@ namespace ImageEncryptCompress
                 //          24 - 20299 - 0 - 20299 // 1 bit * 20299
                 int bittat = s.Length * root.Frequency;
 
-                stream.WriteLine(Convert.ToString(root.Pixel) + " " // Color
-               + Convert.ToString(root.Frequency) + " " // Frequency
-               + s + " " // huffman representation
-                         //s-> "110" => 3 bits * frequency of pixel
-                            + Convert.ToString(bittat)); // total bits eli by representaha el pixel de
+                // color - frequency - huffman representation - total bits
+                // Color - Frequency - huffman representation s-> "110" => 3 bits * frequency of pixel - total bits eli by representaha el pixel de
+                stream.WriteLine(Convert.ToString(root.Pixel) +
+                    " " + Convert.ToString(root.Frequency) +
+                    " " + s + " " + Convert.ToString(bittat));
 
-                Total_Bits += bittat; //o(1)-(addition&& assignment)
-                                      //for (int i = 0; i < top; ++i)
-                                      //{
-                                      //  Console.Write(arr[i]);
-                                      //}
-                                      //Console.WriteLine();
+                //o(1)-(addition&& assignment)
+                //for (int i = 0; i < top; ++i)
+                //{
+                //  Console.Write(arr[i]);
+                //}
+                //Console.WriteLine();
+                Total_Bits += bittat;
             }
         }
 
-        // function to compress the image using the huffman algorithm and write the huffman tree to a binary file
         // function to compress the image using the huffman algorithm
         public static long CompressImage(RGBPixel[,] ImageMatrix, int tapPosition, string seedValue)
         {
@@ -505,7 +506,8 @@ namespace ImageEncryptCompress
             // red channel
             long rem = (red_total_bits % 8);
             long red_bytes = red_total_bits / 8;
-            if (rem != 0) {
+            if (rem != 0)
+            {
                 red_bytes++;
             }
 
@@ -513,7 +515,8 @@ namespace ImageEncryptCompress
             //green_total_bits += (green_total_bits % 8);
             long green_bytes = green_total_bits / 8;
             rem = (green_total_bits % 8);
-            if (rem != 0) {
+            if (rem != 0)
+            {
                 green_bytes++;
             }
 
@@ -718,12 +721,44 @@ namespace ImageEncryptCompress
                 }
             }
 
-            FileStream ss = new FileStream(BinaryPath, FileMode.Truncate);
+
+            byte[] redFreqByteArr = new byte[1024];//o(1) (assignment)
+            byte[] greenFreqByteArr = new byte[1024];//o(1) (assignment)
+            byte[] blueFreqByteArr = new byte[1024];//o(1) (assignment)
+            for (int i = 0; i < 256; i++)
+            {
+                Array.Copy(BitConverter.GetBytes(redFreq[i]), 0, redFreqByteArr, i * 4, 4);//o(nlon)(number of iterations*4 && copy to array)
+                Array.Copy(BitConverter.GetBytes(greenFreq[i]), 0, greenFreqByteArr, i * 4, 4);//o(nlon)(number of iterations*4 && copy to array)
+                Array.Copy(BitConverter.GetBytes(blueFreq[i]), 0, blueFreqByteArr, i * 4, 4);//o(nlon)(number of iterations*4 && copy to array)
+            }
+
+
+            FileStream ffs = new FileStream(BinaryReaderPath, FileMode.Truncate);
+            StreamWriter ffss = new StreamWriter(ffs);
+            ffss.WriteLine(redBinaryRepresentationToWriteInFile.Length);//o(1) (write in file)
+            ffss.WriteLine(blueBinaryRepresentationToWriteInFile.Length);//o(1) (write in file)
+            ffss.WriteLine(greenBinaryRepresentationToWriteInFile.Length);//o(1) (write in file)
+
+            ffss.Close();
+            ffs.Close();
+
+            FileStream ss = new FileStream(BinaryWriterPath, FileMode.Truncate);
             BinaryWriter binWriter = new BinaryWriter(ss);
+
+
+            binWriter.Write(redFreqByteArr);
+            binWriter.Write(blueFreqByteArr);
+            binWriter.Write(greenFreqByteArr);
 
             binWriter.Write(redBinaryRepresentationToWriteInFile);//o(1) (write in file)
             binWriter.Write(blueBinaryRepresentationToWriteInFile);//o(1) (write in file)
             binWriter.Write(greenBinaryRepresentationToWriteInFile);//o(1) (write in file)  
+
+            binWriter.Write(seedValue);
+            binWriter.Write(tapPosition);
+
+            binWriter.Write(Width);
+            binWriter.Write(Height);
 
             binWriter.Close();
             ss.Close();
@@ -732,140 +767,292 @@ namespace ImageEncryptCompress
         }
 
         // function to decompress the image using the huffman tree and the binary file
-        public static RGBPixel[,] DecompressImage(string FilePath)
+        public static RGBPixel[,] DecompressImage()
         {
             // declare the binary file stream and the binary reader
-            FileStream readingStream = new FileStream(FilePath, FileMode.Open);
-            FileStream binary_file_stream = new FileStream(FilePath, FileMode.Open);
-            BinaryReader binary_reader = new BinaryReader(binary_file_stream);
+            string p = BinaryReaderPath;
+            FileStream readingStream = new FileStream(p, FileMode.Open);
+            StreamReader stream_reader = new StreamReader(readingStream);
 
-            // read the seed value and tap position from the binary file
-            seedValue = binary_reader.ReadString();
-            seedKey = binary_reader.ReadInt32();
+            // binaryfile carries:
+            // (1) rgb length (3 lines)
+            // (2) rgb frequencies (each one 1024 byte)
+            // (3) 
 
-            // read the huffman tree from the binary file
-            int red_dict_size = binary_reader.ReadInt32();
-            Dictionary<int, string> red_dict = new Dictionary<int, string>();
+            // lengths of rgb bytes
+            int red_length = Convert.ToInt32(stream_reader.ReadLine());
+            int green_length = Convert.ToInt32(stream_reader.ReadLine());
+            int blue_length = Convert.ToInt32(stream_reader.ReadLine());
 
-            for (int i = 0; i < red_dict_size; i++)
+            stream_reader.Close();
+            readingStream.Close();
+
+            FileStream binaryReadingStream = new FileStream(BinaryWriterPath, FileMode.Open);
+            BinaryReader binary_reader = new BinaryReader(binaryReadingStream);
+
+            // frequency arrs for carrying freqs that are the 
+            // 1024 -> 256 * 4 bytes
+            byte[] redFreqInBytes = binary_reader.ReadBytes(1024);
+            byte[] greenFreqInBytes = binary_reader.ReadBytes(1024);
+            byte[] blueFreqInBytes = binary_reader.ReadBytes(1024);
+
+            // rgb arrs to store 
+            int[] redFreq = new int[256];
+            int[] greenFreq = new int[256];
+            int[] blueFreq = new int[256];
+
+            PriorityQueue pq_red = new PriorityQueue();
+            PriorityQueue pq_green = new PriorityQueue();
+            PriorityQueue pq_blue = new PriorityQueue();
+
+            for (int i = 0; i < 1024; i += 4)//o(1) this loop take 4 bytes and compress them to one int32 value
             {
-                int key = binary_reader.ReadInt32();
-                string value = binary_reader.ReadString();
-                red_dict.Add(key, value);
+                redFreq[i / 4] = BitConverter.ToInt32(redFreqInBytes, i);
+                greenFreq[i / 4] = BitConverter.ToInt32(greenFreqInBytes, i);
+                blueFreq[i / 4] = BitConverter.ToInt32(blueFreqInBytes, i);
             }
 
-            int blue_dict_size = binary_reader.ReadInt32();
-            Dictionary<int, string> blue_dict = new Dictionary<int, string>();
-
-            for (int i = 0; i < blue_dict_size; i++)
+            for (int i = 0; i < 256; i++)//o(1) this loop add in the lists that it's value is not 0
             {
-                int key = binary_reader.ReadInt32();
-                string value = binary_reader.ReadString();
-                blue_dict.Add(key, value);
-            }
-
-            int green_dict_size = binary_reader.ReadInt32();
-            Dictionary<int, string> green_dict = new Dictionary<int, string>();
-
-            for (int i = 0; i < green_dict_size; i++)
-            {
-                int key = binary_reader.ReadInt32();
-                string value = binary_reader.ReadString();
-                green_dict.Add(key, value);
-            }
-
-            // read the total bytes of the image from the binary file
-            long total_bytes = binary_reader.ReadInt64();
-
-            // read the compression ratio of the image from the binary file
-            double compression_ratio = binary_reader.ReadDouble();
-
-            // read the width and height of the image from the binary file
-            int Width = binary_reader.ReadInt32();
-            int Height = binary_reader.ReadInt32();
-
-            // declare the image matrix
-
-            RGBPixel[,] ImageMatrix = new RGBPixel[Height, Width];
-
-            // read the image matrix from the binary file
-
-            for (int i = 0; i < Height; i++)
-            {
-                for (int j = 0; j < Width; j++)
+                if (redFreq[i] != 0)
                 {
-                    // read the red channel from the binary file
-                    int red = 0;
-                    string red_code = String.Empty;
-                    while (true)
+                    HuffmanNode node = new HuffmanNode
                     {
-                        red_code += binary_reader.ReadChar();
-                        foreach (KeyValuePair<int, string> entry in red_dict)
-                        {
-                            if (entry.Value == red_code)
-                            {
-                                red = entry.Key;
-                                break;
-                            }
-                        }
-                        if (red != 0)
-                        {
-                            break;
-                        }
-                    }
+                        Pixel = i,
+                        Frequency = redFreq[i]
+                    };
+                    node.Left = node.Right = null;
+                    pq_red.Push(node);
+                }
 
-                    // read the green channel from the binary file
-                    int green = 0;
-                    string green_code = String.Empty;
-                    while (true)
+                if (greenFreq[i] != 0)
+                {
+                    HuffmanNode node = new HuffmanNode
                     {
-                        green_code += binary_reader.ReadChar();
-                        foreach (KeyValuePair<int, string> entry in green_dict)
-                        {
-                            if (entry.Value == green_code)
-                            {
-                                green = entry.Key;
-                                break;
-                            }
-                        }
-                        if (green != 0)
-                        {
-                            break;
-                        }
-                    }
+                        Pixel = i,
+                        Frequency = greenFreq[i]
+                    };
+                    node.Left = node.Right = null;
+                    pq_green.Push(node);
+                }
 
-                    // read the blue channel from the binary file
-                    int blue = 0;
-                    string blue_code = String.Empty;
-                    while (true)
+                if (blueFreq[i] != 0)
+                {
+                    HuffmanNode node = new HuffmanNode
                     {
-                        blue_code += binary_reader.ReadChar();
-                        foreach (KeyValuePair<int, string> entry in blue_dict)
-                        {
-                            if (entry.Value == blue_code)
-                            {
-                                blue = entry.Key;
-                                break;
-                            }
-                        }
-                        if (blue != 0)
-                        {
-                            break;
-                        }
-                    }
-
-                    // update the image matrix with the pixel
-                    ImageMatrix[i, j].red = (byte)red;
-                    ImageMatrix[i, j].green = (byte)green;
-                    ImageMatrix[i, j].blue = (byte)blue;
+                        Pixel = i,
+                        Frequency = blueFreq[i]
+                    };
+                    node.Left = node.Right = null;
+                    pq_blue.Push(node);
                 }
             }
 
-            // close the binary reader
+
+            // construct the huffman tree for the red channel
+            while (pq_red.Count != 1)
+            {
+                HuffmanNode node = new HuffmanNode();
+                HuffmanNode smallFreq = pq_red.Pop();
+                HuffmanNode largeFreq = pq_red.Pop();
+
+                node.Frequency = smallFreq.Frequency + largeFreq.Frequency;
+                node.Left = largeFreq;
+                node.Right = smallFreq;
+                pq_red.Push(node);
+            }
+
+            // construct the huffman tree for the green channel
+            while (pq_green.Count != 1)
+            {
+                HuffmanNode node = new HuffmanNode();
+                HuffmanNode smallFreq = pq_green.Pop();
+                HuffmanNode largeFreq = pq_green.Pop();
+
+                node.Frequency = smallFreq.Frequency + largeFreq.Frequency;
+                node.Left = largeFreq;
+                node.Right = smallFreq;
+                pq_green.Push(node);
+            }
+
+            // construct the huffman tree for the red channel
+            while (pq_blue.Count != 1)
+            {
+                HuffmanNode node = new HuffmanNode();
+                HuffmanNode smallFreq = pq_blue.Pop();
+                HuffmanNode largeFreq = pq_blue.Pop();
+
+                node.Frequency = smallFreq.Frequency + largeFreq.Frequency;
+                node.Left = largeFreq;
+                node.Right = smallFreq;
+                pq_blue.Push(node);
+            }
+
+            HuffmanNode rootNodeRed = pq_red.Pop();
+            HuffmanNode rootNodeGreen = pq_green.Pop();
+            HuffmanNode rootNodeBlue = pq_blue.Pop();
+
+            //o(1) read from the file the red bytes compressed values
+            byte[] compressed_red = binary_reader.ReadBytes(red_length);
+
+            //o(1) read from the file the green bytes compressed values
+            byte[] compressed_green = binary_reader.ReadBytes(green_length);
+
+            //o(1) read from the file the blue bytes compressed values
+            byte[] compressed_blue = binary_reader.ReadBytes(blue_length);
+
+            seedValue = binary_reader.ReadString();// o(1) get the seed from the file 
+            seedKey = binary_reader.ReadInt32();//o(1 )get the tape from the file
+
+            int Width = binary_reader.ReadInt32();// o(1) get the width from the file
+            int Height = binary_reader.ReadInt32();// o(1) get the heigth from the file 
+
             binary_reader.Close();
+            binaryReadingStream.Close();
+            //            Tape_Position = tap_position;//o(1) save it to he global value
+            //            Initial_Seed = seed;//o(1) save it to the global value            
 
-            return ImageMatrix;
+            // 3 lists to save colors values that would end in 3*(N^2) space
+            List<int> redPixels = new List<int>();//o(1) 
+            List<int> bluePixels = new List<int>();//o(1) 
+            List<int> greenPixels = new List<int>();//o(1) 
+
+            // 128 -> 1000 0000
+            byte byteValue = 128; //o(1) assigment to get the bits from the byte color
+            int currBitCount = 0; // o(1) assigment that count to 8 to get the value of one byte
+            HuffmanNode rootNode1 = rootNodeRed; // o(1) assigment that point to the top node in huffman
+
+            int cnt = 0;
+            long crl = compressed_red.Length;
+            while (cnt < crl) // Loop through the compressed red bytes
+            {
+                while (currBitCount < 8) // Read each bit of the byte
+                {
+                    byte hettaOS = (byte)(compressed_red[cnt] & byteValue); // Get the specific bit
+                    HuffmanNode tempNode; // Temp node to traverse the Huffman tree
+
+                    // Determine the next node according to the bit value
+                    if (hettaOS == 0)
+                    {
+                        tempNode = rootNode1.Left;
+                    }
+                    else
+                    {
+                        tempNode = rootNode1.Right;
+                    }
+
+                    if (tempNode.Left == null && tempNode.Right == null) // Check if it's a leaf node
+                    {
+                        redPixels.Add(tempNode.Pixel); // Add the decoded pixel value to the red pixels list
+                                                       // Do not reset rootNode1 here
+                    }
+                    else
+                    {
+                        rootNode1 = tempNode; // Move to the next node in the Huffman tree
+                    }
+
+                    byteValue /= 2; // Move to the next bit
+                    currBitCount++; // Increase the bit count
+                }
+
+                cnt++; // Move to the next byte
+                currBitCount = 0; // Reset the bit count
+                byteValue = 128; // Reset to the first bit
+            }
+
+            byteValue = 128;
+            currBitCount = 0;
+            rootNode1 = rootNodeGreen;
+            cnt = 0;
+            long cgl = compressed_green.Length;
+            while (cnt < cgl) //o(s.length)
+            {
+                while (currBitCount < 8) //o(1) this loop count until the byte read all 
+                {
+                    byte hettaOS = (byte)(compressed_green[cnt] & byteValue); //o(1) assigmrnt to get the spceific bit
+                    HuffmanNode tempNode; //o(1) call the function to get the next node according to the bit value
+                    if (hettaOS == 0)
+                    {
+                        tempNode = rootNode1.Left; //o(1)return
+                    } //o(1) Assigment
+                    else { 
+                        tempNode = rootNode1.Right; //o(1)return
+                    }
+
+                    if (tempNode.Left == null && tempNode.Right == null) //o(1) check that the cuurent node is a leaf node
+                    {
+                        greenPixels.Add(tempNode.Pixel); // o(1) add to the list the value of the cuurent color
+                        rootNode1 = rootNodeRed; // O(1) make search start from the root or the huffman
+                    }
+                    else
+                    {
+                        rootNode1 = tempNode; //o(1)make the start node is the current node
+                    }
+
+                    byteValue /= 2; // o(1)  divide the var to get the next bit 
+                    currBitCount++; // o(1) read another 8 bits
+
+                }
+                cnt++; // o(1) go to the next list value to save on it
+                currBitCount = 0; // o(1) reset the counter
+                byteValue = 128; // o(1) reset the var to make it point to the first bit
+            }
+
+
+            byteValue = 128;
+            currBitCount = 0;
+            rootNode1 = rootNodeBlue;
+            cnt = 0;
+            long cbl = compressed_blue.Length;
+            while (cnt < cbl) //o(s.length)
+            {
+                while (currBitCount < 8) //o(1) this loop count until the byte read all 
+                {
+                    byte hettaOS = (byte)(compressed_blue[cnt] & byteValue); //o(1) assigmrnt to get the spceific bit
+                    HuffmanNode tempNode; //o(1) call the function to get the next node according to the bit value
+                    if (hettaOS == 0)
+                    {
+                        tempNode = rootNode1.Left; //o(1)return
+                    }//o(1) Assigment
+                    else { 
+                        tempNode = rootNode1.Right; //o(1)return
+                    }
+
+                    if (tempNode.Left == null && tempNode.Right == null) //o(1) check that the cuurent node is a leaf node
+                    {
+                        bluePixels.Add(tempNode.Pixel); // o(1) add to the list the value of the cuurent color
+                        rootNode1 = rootNodeRed; // O(1) make search start from the root or the huffman
+                    }
+                    else
+                    {
+                        rootNode1 = tempNode; //o(1)make the start node is the current node
+                    }
+
+                    byteValue /= 2; // o(1)  divide the var to get the next bit 
+                    currBitCount++; // o(1) read another 8 bits
+
+                }
+                cnt++; // o(1) go to the next list value to save on it
+                currBitCount = 0; // o(1) reset the counter
+                byteValue = 128; // o(1) reset the var to make it point to the first bit
+            }
+
+
+            RGBPixel[,] originalPicture = new RGBPixel[Height, Width];// create a new RGBpixel that get the image values 
+            int index = 0;
+            // this nessted loop create the iamge that displayed to the user
+            for (int i = 0; i < Height; i++)//o(H)
+            {
+                for (int j = 0; j < Width; j++)//o(W)
+                {
+                    originalPicture[i, j].red = (byte)redPixels[index];
+                    originalPicture[i, j].green = (byte)greenPixels[index];
+                    originalPicture[i, j].blue = (byte)bluePixels[index];
+                    index++;
+                }
+            }
+
+            return originalPicture;
         }
-
     }
 }

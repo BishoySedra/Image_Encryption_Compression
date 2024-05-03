@@ -367,13 +367,13 @@ namespace ImageEncryptCompress
         private void button8_Click(object sender, EventArgs e)
         {
             // getting the decompressed image
-            RGBPixel[,] decompressedImage = ImageOperations.DecompressImage(ImageOperations.BinaryPath);
+            RGBPixel[,] decompressedImage = ImageOperations.DecompressImage();
 
             // display the decompressed image
             ImageOperations.DisplayImage(decompressedImage, pictureBox2);
 
             // export the decompressed image
-            ImageOperations.ExportImage(decompressedImage, "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Decompression\\Decompressed.bmp");
+            ImageOperations.ExportImage(decompressedImage, ImageOperations.DecompressedImagePath);
         }
     }
 }
