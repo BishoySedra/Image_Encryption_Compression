@@ -19,10 +19,6 @@ namespace ImageEncryptCompress
         RGBPixel[,] ImageMatrix2;
         RGBPixel[,] DesiredImageMatrix;
 
-        string EncryptedImagePath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Encryption\\MY_OUTPUT\\Encryption\\Encrypted.bmp";
-        string DecryptedImagePath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Encryption\\MY_OUTPUT\\Decryption\\Decrypted.bmp";
-        string BinaryPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\Binary.bin";
-
         private void btnOpen_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
@@ -67,7 +63,7 @@ namespace ImageEncryptCompress
             // start the stop watch
             sw.Start();
 
-            ImageMatrix = ImageOperations.EncryptDecrypt(ImageMatrix, initialSeed, tapPosition);
+            ImageMatrix = ImageOperations.EncryptDecryptImage(ImageMatrix, initialSeed, tapPosition);
 
             // stop the stop watch
             sw.Stop();
@@ -89,7 +85,7 @@ namespace ImageEncryptCompress
             ImageOperations.DisplayImage(ImageMatrix, pictureBox2);
 
             // export the image to the desktop
-            ImageOperations.ExportImage(ImageMatrix, EncryptedImagePath);
+            ImageOperations.ExportImage(ImageMatrix, ImageOperations.EncryptedImagePath);
         }
 
         private void txtWidth_TextChanged(object sender, EventArgs e)
@@ -131,7 +127,7 @@ namespace ImageEncryptCompress
             // start the stop watch
             sw.Start();
 
-            ImageMatrix = ImageOperations.EncryptDecrypt(ImageMatrix, initialSeed, tapPosition);
+            ImageMatrix = ImageOperations.EncryptDecryptImage(ImageMatrix, initialSeed, tapPosition);
 
             // stop the stop watch
             sw.Stop();
@@ -150,7 +146,7 @@ namespace ImageEncryptCompress
             ImageOperations.DisplayImage(ImageMatrix, pictureBox2);
 
             // export the image to the desktop
-            ImageOperations.ExportImage(ImageMatrix, DecryptedImagePath);
+            ImageOperations.ExportImage(ImageMatrix, ImageOperations.DecryptedImagePath);
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -173,7 +169,7 @@ namespace ImageEncryptCompress
             // start the stop watch
             sw.Start();
 
-            ImageMatrix = ImageOperations.EncryptDecrypt(ImageMatrix, initialSeed, tapPosition);
+            ImageMatrix = ImageOperations.EncryptDecryptImage(ImageMatrix, initialSeed, tapPosition);
 
             // stop the stop watch
             sw.Stop();
@@ -206,7 +202,7 @@ namespace ImageEncryptCompress
             // start the stop watch
             sw.Start();
 
-            ImageMatrix = ImageOperations.EncryptDecrypt(ImageMatrix, initialSeed, tapPosition);
+            ImageMatrix = ImageOperations.EncryptDecryptImage(ImageMatrix, initialSeed, tapPosition);
 
             // stop the stop watch
             sw.Stop();
@@ -234,10 +230,10 @@ namespace ImageEncryptCompress
                 string OpenedFilePath = openFileDialog1.FileName;
                 ImageMatrix = ImageOperations.OpenImage(OpenedFilePath);
                 ImageOperations.DisplayImage(ImageMatrix, pictureBox1);
+                // change label12 text
+                label12.Text = "Image 1 loaded Successfully!";
             }
 
-            // change label12 text
-            label12.Text = "Image 1 loaded Successfully!";
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -249,17 +245,24 @@ namespace ImageEncryptCompress
                 string OpenedFilePath = openFileDialog2.FileName;
                 ImageMatrix2 = ImageOperations.OpenImage(OpenedFilePath);
                 ImageOperations.DisplayImage(ImageMatrix2, pictureBox2);
+                // change label13 text
+                label13.Text = "Image 2 loaded Successfully!";
             }
 
-            // change label13 text
-            label13.Text = "Image 2 loaded Successfully!";
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
 
+            // if the one of the images is not loaded
+            if (ImageMatrix == null || ImageMatrix2 == null)
+            {
+                MessageBox.Show("Please Load Both Images First!");
+                return;
+            }
+
             // testing the identicality of the two images
-            bool identical = ImageOperations.TestIdenticality(ImageMatrix, ImageMatrix2);
+            bool identical = BONUS_Functions.TestIdenticality(ImageMatrix, ImageMatrix2);
 
             if (identical)
             {
@@ -278,11 +281,18 @@ namespace ImageEncryptCompress
 
         private void button7_Click(object sender, EventArgs e)
         {
+            // getting the initial seed and tap position
+            string initialSeed = txtGaussSigma.Text;
+            int tapPosition = int.Parse(textBox1.Text);
+
             // construct the huffman tree function
-            KeyValuePair<long, double> result = ImageOperations.ConstructHuffmanTree(ImageMatrix);
+            long total_bytes = ImageOperations.CompressImage(ImageMatrix, tapPosition, initialSeed);
+
+            // show messsage box for the total bytes
+            MessageBox.Show("Total Bytes: " + total_bytes);
 
             // show message box for the result
-            MessageBox.Show("Compression Ratio: " + result.Value + "%\nCompression Output: " + result.Key + " bytes");
+            //MessageBox.Show("Compression Ratio: " + result.Value + "%\nCompression Output: " + result.Key + " bytes");
         }
 
         private void label8_Click(object sender, EventArgs e)
@@ -324,7 +334,7 @@ namespace ImageEncryptCompress
             int numberOfBits = int.Parse(textBox2.Text);
 
             // attack the image with the desired number of bits
-            Tuple<string, int> result = ImageOperations.Attack(ImageMatrix, DesiredImageMatrix, numberOfBits);
+            Tuple<string, int> result = BONUS_Functions.Attack(ImageMatrix, DesiredImageMatrix, numberOfBits);
 
             // show the result in the message box
             if (result != null)
@@ -357,7 +367,7 @@ namespace ImageEncryptCompress
         private void button8_Click(object sender, EventArgs e)
         {
             // getting the decompressed image
-            RGBPixel[,] decompressedImage = ImageOperations.DecompressImage(BinaryPath);
+            RGBPixel[,] decompressedImage = ImageOperations.DecompressImage(ImageOperations.BinaryPath);
 
             // display the decompressed image
             ImageOperations.DisplayImage(decompressedImage, pictureBox2);
