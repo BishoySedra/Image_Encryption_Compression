@@ -366,11 +366,25 @@ namespace ImageEncryptCompress
 
         private void button8_Click(object sender, EventArgs e)
         {
+            
+
+            // stop watch to calculate the time of the operation
+            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+
+            // start the stop watch
+            sw.Start();
+
             // getting the decompressed image
             RGBPixel[,] decompressedImage = ImageOperations.DecompressImage();
 
+            // stop the stop watch
+            sw.Stop();
+
+            // show the time of the operation in the message box
+            MessageBox.Show("Time: " + sw.ElapsedMilliseconds + " ms");
+
             // display the decompressed image
-            ImageOperations.DisplayImage(decompressedImage, pictureBox2);
+            ImageOperations.DisplayImage(decompressedImage, pictureBox1);
 
             // export the decompressed image
             ImageOperations.ExportImage(decompressedImage, ImageOperations.DecompressedImagePath);
