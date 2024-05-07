@@ -29,6 +29,10 @@ namespace ImageEncryptCompress
                 ImageMatrix = ImageOperations.OpenImage(OpenedFilePath);
                 ImageOperations.DisplayImage(ImageMatrix, pictureBox1);
             }
+            else {
+                MessageBox.Show("Please Load Image First!");
+                return;
+            }
             txtWidth.Text = ImageOperations.GetWidth(ImageMatrix).ToString();
             txtHeight.Text = ImageOperations.GetHeight(ImageMatrix).ToString();
 
@@ -331,7 +335,16 @@ namespace ImageEncryptCompress
         {
 
             // taking input from textBox2
-            int numberOfBits = int.Parse(textBox2.Text);
+            string input_numberOfBits = textBox2.Text;
+
+            // check if the number of bits is not empty
+            if (input_numberOfBits == "")
+            {
+                MessageBox.Show("Please Enter Number of Bits!");
+                return;
+            }
+
+            int numberOfBits = int.Parse(input_numberOfBits);
 
             // attack the image with the desired number of bits
             Tuple<string, int> result = BONUS_Functions.Attack(ImageMatrix, DesiredImageMatrix, numberOfBits);
