@@ -944,66 +944,6 @@ namespace ImageEncryptCompress
             int cnt = 0;
             long crl = compressed_red.Length;
 
-
-            //if (red_extra_bits != 0)
-            //{
-            //    while (cnt < crl - 1) //o(s.length)
-            //    {
-            //        while (currBitCount < 8) //o(1) this loop count until the byte read all 
-            //        {
-            //            byte hettaOS = (byte)(compressed_red[cnt] & byteValue); //o(1) assigmrnt to get the spceific bit
-            //            HuffmanNode tempNode; //o(1) call the function to get the next node according to the bit value
-            //            if (hettaOS == 0) //o(1) Assigment
-            //                tempNode = rootNode1.Left; //o(1)return
-            //            else
-            //                tempNode = rootNode1.Right; //o(1)return
-
-            //            if (tempNode.Left == null && tempNode.Right == null) //o(1) check that the cuurent node is a leaf node
-            //            {
-            //                redPixels.Add(tempNode.Pixel); // o(1) add to the list the value of the cuurent color
-            //                rootNode1 = rootNodeRed; // O(1) make search start from the root or the huffman
-            //            }
-            //            else
-            //            {
-            //                rootNode1 = tempNode; //o(1)make the start node is the current node
-            //            }
-
-            //            byteValue /= 2; // o(1)  divide the var to get the next bit 
-            //            currBitCount++; // o(1) read another 8 bits
-            //        }
-
-            //        cnt++; // o(1) go to the next list value to save on it
-            //        currBitCount = 0; // o(1) reset the counter
-            //        byteValue = 128; // o(1) reset the var to make it point to the first bit
-            //    }
-            //    // el extra bit 
-
-            //    while (currBitCount < red_extra_bits) //o(1) this loop count until the byte read all 
-            //    {
-            //        byte hettaOS = (byte)(compressed_red[cnt] & byteValue); //o(1) assigmrnt to get the spceific bit
-            //        HuffmanNode tempNode; //o(1) call the function to get the next node according to the bit value
-            //        if (hettaOS == 0) //o(1) Assigment
-            //            tempNode = rootNode1.Left; //o(1)return
-            //        else
-            //            tempNode = rootNode1.Right; //o(1)return
-
-            //        if (tempNode.Left == null && tempNode.Right == null) //o(1) check that the cuurent node is a leaf node
-            //        {
-            //            redPixels.Add(tempNode.Pixel); // o(1) add to the list the value of the cuurent color
-            //            rootNode1 = rootNodeRed; // O(1) make search start from the root or the huffman
-            //        }
-            //        else
-            //        {
-            //            rootNode1 = tempNode; //o(1)make the start node is the current node
-            //        }
-
-            //        byteValue /= 2; // o(1)  divide the var to get the next bit 
-            //        currBitCount++; // o(1) read another 8 bits
-            //    }
-
-            //}
-            //else
-            //{
             while (cnt < crl) //o(s.length)
             {
                 while (currBitCount < 8) //o(1) this loop count until the byte read all 
@@ -1033,9 +973,6 @@ namespace ImageEncryptCompress
                 currBitCount = 0; // o(1) reset the counter
                 byteValue = 128; // o(1) reset the var to make it point to the first bit
             }
-            //}
-
-
 
             byteValue = 128;
             currBitCount = 0;
@@ -1043,62 +980,6 @@ namespace ImageEncryptCompress
             cnt = 0;
             long cgl = compressed_green.Length;
 
-            //if (green_extra_bits != 0)
-            //{
-            //    while (cnt < cgl - 1) //o(s.length)
-            //    {
-            //        while (currBitCount < 8) //o(1) this loop count until the byte read all 
-            //        {
-            //            byte hettaOS = (byte)(compressed_green[cnt] & byteValue); //o(1) assigmrnt to get the spceific bit
-            //            HuffmanNode tempNode; //o(1) call the function to get the next node according to the bit value
-            //            if (hettaOS == 0) //o(1) Assigment
-            //                tempNode = rootNode1.Left; //o(1)return
-            //            else
-            //                tempNode = rootNode1.Right; //o(1)return
-
-            //            if (tempNode.Left == null && tempNode.Right == null) //o(1) check that the cuurent node is a leaf node
-            //            {
-            //                greenPixels.Add(tempNode.Pixel); // o(1) add to the list the value of the cuurent color
-            //                rootNode1 = rootNodeGreen; // O(1) make search start from the root or the huffman
-            //            }
-            //            else
-            //            {
-            //                rootNode1 = tempNode; //o(1)make the start node is the current node
-            //            }
-
-            //            byteValue /= 2; // o(1)  divide the var to get the next bit 
-            //            currBitCount++; // o(1) read another 8 bits
-
-            //        }
-            //        cnt++; // o(1) go to the next list value to save on it
-            //        currBitCount = 0; // o(1) reset the counter
-            //        byteValue = 128; // o(1) reset the var to make it point to the first bit
-            //    }
-            //    while (currBitCount < green_extra_bits) //o(1) this loop count until the byte read all 
-            //    {
-            //        byte hettaOS = (byte)(compressed_green[cnt] & byteValue); //o(1) assigmrnt to get the spceific bit
-            //        HuffmanNode tempNode; //o(1) call the function to get the next node according to the bit value
-            //        if (hettaOS == 0) //o(1) Assigment
-            //            tempNode = rootNode1.Left; //o(1)return
-            //        else
-            //            tempNode = rootNode1.Right; //o(1)return
-
-            //        if (tempNode.Left == null && tempNode.Right == null) //o(1) check that the cuurent node is a leaf node
-            //        {
-            //            greenPixels.Add(tempNode.Pixel); // o(1) add to the list the value of the cuurent color
-            //            rootNode1 = rootNodeGreen; // O(1) make search start from the root or the huffman
-            //        }
-            //        else
-            //        {
-            //            rootNode1 = tempNode; //o(1)make the start node is the current node
-            //        }
-
-            //        byteValue /= 2; // o(1)  divide the var to get the next bit 
-            //        currBitCount++; // o(1) read another 8 bits
-            //    }
-            //}
-            //else
-            //{
             while (cnt < cgl) //o(s.length)
             {
                 while (currBitCount < 8) //o(1) this loop count until the byte read all 
@@ -1128,7 +1009,6 @@ namespace ImageEncryptCompress
                 currBitCount = 0; // o(1) reset the counter
                 byteValue = 128; // o(1) reset the var to make it point to the first bit
             }
-            //}
 
             byteValue = 128;
             currBitCount = 0;
@@ -1136,62 +1016,6 @@ namespace ImageEncryptCompress
             cnt = 0;
             long cbl = compressed_blue.Length;
 
-            //if (blue_extra_bits != 0)
-            //{
-            //    while (cnt < cbl - 1) //o(s.length)
-            //    {
-            //        while (currBitCount < 8) //o(1) this loop count until the byte read all 
-            //        {
-            //            byte hettaOS = (byte)(compressed_blue[cnt] & byteValue); //o(1) assigmrnt to get the spceific bit
-            //            HuffmanNode tempNode; //o(1) call the function to get the next node according to the bit value
-            //            if (hettaOS == 0) //o(1) Assigment
-            //                tempNode = rootNode1.Left; //o(1)return
-            //            else
-            //                tempNode = rootNode1.Right; //o(1)return
-
-            //            if (tempNode.Left == null && tempNode.Right == null) //o(1) check that the cuurent node is a leaf node
-            //            {
-            //                bluePixels.Add(tempNode.Pixel); // o(1) add to the list the value of the cuurent color
-            //                rootNode1 = rootNodeBlue; // O(1) make search start from the root or the huffman
-            //            }
-            //            else
-            //            {
-            //                rootNode1 = tempNode; //o(1)make the start node is the current node
-            //            }
-
-            //            byteValue /= 2; // o(1)  divide the var to get the next bit 
-            //            currBitCount++; // o(1) read another 8 bits
-
-            //        }
-            //        cnt++; // o(1) go to the next list value to save on it
-            //        currBitCount = 0; // o(1) reset the counter
-            //        byteValue = 128; // o(1) reset the var to make it point to the first bit
-            //    }
-            //    while (currBitCount < blue_extra_bits) //o(1) this loop count until the byte read all 
-            //    {
-            //        byte hettaOS = (byte)(compressed_blue[cnt] & byteValue); //o(1) assigmrnt to get the spceific bit
-            //        HuffmanNode tempNode; //o(1) call the function to get the next node according to the bit value
-            //        if (hettaOS == 0) //o(1) Assigment
-            //            tempNode = rootNode1.Left; //o(1)return
-            //        else
-            //            tempNode = rootNode1.Right; //o(1)return
-
-            //        if (tempNode.Left == null && tempNode.Right == null) //o(1) check that the cuurent node is a leaf node
-            //        {
-            //            bluePixels.Add(tempNode.Pixel); // o(1) add to the list the value of the cuurent color
-            //            rootNode1 = rootNodeBlue; // O(1) make search start from the root or the huffman
-            //        }
-            //        else
-            //        {
-            //            rootNode1 = tempNode; //o(1)make the start node is the current node
-            //        }
-
-            //        byteValue /= 2; // o(1)  divide the var to get the next bit 
-            //        currBitCount++; // o(1) read another 8 bits
-            //    }
-            //}
-            //else
-            //{
             while (cnt < cbl) //o(s.length)
             {
                 while (currBitCount < 8) //o(1) this loop count until the byte read all 
@@ -1220,8 +1044,6 @@ namespace ImageEncryptCompress
                 currBitCount = 0; // o(1) reset the counter
                 byteValue = 128; // o(1) reset the var to make it point to the first bit
             }
-            //}
-
 
             RGBPixel[,] decompressedPicture = new RGBPixel[Height, Width];
             int index = 0;

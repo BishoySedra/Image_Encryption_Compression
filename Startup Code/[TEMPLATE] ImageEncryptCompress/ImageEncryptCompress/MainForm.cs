@@ -50,6 +50,30 @@ namespace ImageEncryptCompress
 
             // label for attacking status
             label9.Text = "";
+
+            // label for the compression status
+            label14.Text = "";
+
+            // label for the compression time in seconds
+            label16.Text = "";
+
+            // label for the compression time in minutes
+            label17.Text = "";
+
+            // label for the total bytes
+            label20.Text = "";
+
+            // label for the compression ratio
+            label21.Text = "";
+
+            // label for the decompression status
+            label15.Text = "";
+
+            // label for the decompression time in seconds
+            label19.Text = "";
+
+            // label for the decompression time in minutes
+            label18.Text = "";
         }
 
         private void btnGaussSmooth_Click(object sender, EventArgs e)
@@ -280,12 +304,51 @@ namespace ImageEncryptCompress
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            // clear the text box for the number of bits
+            textBox2.Text = "";
 
+            // label for the image 1 status 
+            label12.Text = "";
+
+            // label for the image 2 status
+            label13.Text = "";
+
+            //  label for the desired image status
+            label10.Text = "";
+
+            // label for attacking status
+            label9.Text = "";
+
+            // label for the compression status
+            label14.Text = "";
+
+            // label for the compression time in seconds
+            label16.Text = "";
+
+            // label for the compression time in minutes
+            label17.Text = "";
+
+            // label for the total bytes
+            label20.Text = "";
+
+            // label for the compression ratio
+            label21.Text = "";
+
+            // label for the decompression status
+            label15.Text = "";
+
+            // label for the decompression time in seconds
+            label19.Text = "";
+
+            // label for the decompression time in minutes
+            label18.Text = "";
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
             // getting the initial seed and tap position
+
+
             string initialSeed = txtGaussSigma.Text;
             int tapPosition = int.Parse(textBox1.Text);
 
@@ -304,8 +367,14 @@ namespace ImageEncryptCompress
             // show the time of the operation in the message box
             MessageBox.Show("Time: " + sw.ElapsedMilliseconds + " ms");
 
-            // show messsage box for the total bytes
-            MessageBox.Show("Total Bytes: " + total_bytes);
+            long total_bits = total_bytes * 8;
+            int width = ImageOperations.GetWidth(ImageMatrix);
+            int height = ImageOperations.GetHeight(ImageMatrix);
+            int total_pixels = width * height * 24;
+            double compression_ratio = ((double)total_bits / total_pixels) * 100;
+
+            // show messsage box for the total bytes and the compression ratio
+            MessageBox.Show("Total Bytes: " + total_bytes + "\nCompression Ratio: " + compression_ratio + "%");
 
             // show message box for the result
             //MessageBox.Show("Compression Ratio: " + result.Value + "%\nCompression Output: " + result.Key + " bytes");
@@ -413,6 +482,119 @@ namespace ImageEncryptCompress
 
             // export the decompressed image
             ImageOperations.ExportImage(decompressedImage, ImageOperations.DecompressedImagePath);
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            // getting the initial seed and tap position
+            string initialSeed = txtGaussSigma.Text;
+            int tapPosition = int.Parse(textBox1.Text);
+
+            // create stop watch to calculate the time of the operation
+            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+
+            // start the stop watch
+            sw.Start();
+
+            // first encrypt the image
+            ImageMatrix = ImageOperations.EncryptDecryptImage(ImageMatrix, initialSeed, tapPosition);
+
+            // second compress the image
+            long total_bytes = ImageOperations.CompressImage(ImageMatrix, tapPosition, initialSeed);
+
+            // stop the stop watch
+            sw.Stop();
+
+            // show the time of the operation in the message box
+            long time = sw.ElapsedMilliseconds;
+            long time_in_seconds = time / 1000;
+            long time_in_minutes = time_in_seconds / 60;
+
+            // change the label for the compression status
+            label14.Text = "Encryption and Compression Time:";
+            label16.Text = "Seconds: " + time_in_seconds + " (" + time + " ms)";
+            label17.Text = "Minutes: " + time_in_minutes;
+            label20.Text = "Total Bytes: " + total_bytes;
+
+            total_bytes *= 8;
+            int width = ImageOperations.GetWidth(ImageMatrix);
+            int height = ImageOperations.GetHeight(ImageMatrix);
+            int total_pixels = width * height * 24;
+            double compression_ratio = (double)total_bytes / total_pixels * 100;
+
+            label21.Text = "Compression Ratio: " + compression_ratio + "%";
+        }
+
+        private void label15_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label16_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label17_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label14_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            // getting the initial seed and tap position
+            string initialSeed = txtGaussSigma.Text;
+            int tapPosition = int.Parse(textBox1.Text);
+
+            // create stop watch to calculate the time of the operation
+            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+
+            // start the stop watch
+            sw.Start();
+
+            // first decompress the image
+            RGBPixel[,] decompressedImage = ImageOperations.DecompressImage();
+
+            // second decrypt the image
+            ImageMatrix = ImageOperations.EncryptDecryptImage(decompressedImage, initialSeed, tapPosition);
+
+            // stop the stop watch
+            sw.Stop();
+
+            // show the time of the operation in the message box
+            long time = sw.ElapsedMilliseconds;
+            long time_in_seconds = time / 1000;
+            long time_in_minutes = time_in_seconds / 60;
+
+            // change the label for the compression status
+            label15.Text = "Decompression and Decryption Time:";
+            label19.Text = "Seconds: " + time_in_seconds + " (" + time + " ms)";
+            label18.Text = "Minutes: " + time_in_minutes;
+        }
+
+        private void label20_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label21_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label19_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label18_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
