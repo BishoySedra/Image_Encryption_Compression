@@ -197,9 +197,12 @@ namespace ImageEncryptCompress
         {
             // 0 == > red, 1 ==> green, 2 ==> blue
             string[] results = new string[3];
-            string answer = String.Empty;
 
-            // first getting the tap position bit and the first bit will be shifted
+            // create string builder to store the answer
+            StringBuilder answer = new StringBuilder();
+            StringBuilder seedBuilder = new StringBuilder(initialSeed);
+
+            // convert the initial seed to binary
             int size = initialSeed.Length;
             char tapPositionBit;
             char firstBit;
@@ -208,28 +211,29 @@ namespace ImageEncryptCompress
             for (int i = 1; i <= k * 3; i++)
             {
 
-                tapPositionBit = initialSeed[size - tapPosition - 1];
-                firstBit = initialSeed[0];
+                tapPositionBit = seedBuilder[size - tapPosition - 1];
+                firstBit = seedBuilder[0];
                 char newBit = helpers.XOR(firstBit, tapPositionBit);
 
-                answer += newBit;
+                answer.Append(newBit);
 
                 if (i % k == 0)
                 {
-                    results[cnt] = answer;
-                    answer = String.Empty;
+                    results[cnt] = answer.ToString();
+                    answer.Clear();
                     cnt++;
                 }
 
                 // shifting the bits to the right
-                initialSeed = (initialSeed.Substring(1) + newBit);
+                seedBuilder.Remove(0, 1);
+                seedBuilder.Append(newBit);
 
                 // printing the new seed
                 //Console.Write(i + 1 + " ==> ");
                 //Console.WriteLine(initialSeed);
             }
 
-            seedValue = initialSeed;
+            seedValue = seedBuilder.ToString();
 
             return results;
         }
@@ -270,21 +274,14 @@ namespace ImageEncryptCompress
 
                     // convert the RGB values to binary strings
                     // O(1)
-                    string redBinary = helpers.convertToBinary(helpers.ByteToInt(red));
-                    string greenBinary = helpers.convertToBinary(helpers.ByteToInt(green));
-                    string blueBinary = helpers.convertToBinary(helpers.ByteToInt(blue));
+                    byte redBinaryByte = Convert.ToByte(keys[0], 2);
+                    byte greenBinaryByte = Convert.ToByte(keys[1], 2);
+                    byte blueBinaryByte = Convert.ToByte(keys[2], 2);
 
-                    // encrypt the RGB values using the LFSR keys
-                    // O(1)
-                    string encryptedRed = helpers.XOR(redBinary, keys[0]);
-                    string encryptedGreen = helpers.XOR(greenBinary, keys[1]);
-                    string encryptedBlue = helpers.XOR(blueBinary, keys[2]);
-
-                    // convert the encrypted RGB values to bytes
-                    // O(1)
-                    byte encryptedRedByte = helpers.convertToByte(encryptedRed);
-                    byte encryptedGreenByte = helpers.convertToByte(encryptedGreen);
-                    byte encryptedBlueByte = helpers.convertToByte(encryptedBlue);
+                    byte encryptedRedByte = (byte)(red ^ redBinaryByte);
+                    byte encryptedGreenByte = (byte)(green ^ greenBinaryByte);
+                    byte encryptedBlueByte = (byte)(blue ^ blueBinaryByte);
+                    
 
                     // update the encrypted image matrix with the encrypted pixel
                     // O(1)

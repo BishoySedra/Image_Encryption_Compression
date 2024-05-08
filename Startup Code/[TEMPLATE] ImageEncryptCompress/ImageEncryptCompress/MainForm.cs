@@ -289,8 +289,20 @@ namespace ImageEncryptCompress
             string initialSeed = txtGaussSigma.Text;
             int tapPosition = int.Parse(textBox1.Text);
 
+            // create stop watch to calculate the time of the operation
+            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+
+            // start the stop watch
+            sw.Start();
+
             // construct the huffman tree function
             long total_bytes = ImageOperations.CompressImage(ImageMatrix, tapPosition, initialSeed);
+
+            // stop the stop watch
+            sw.Stop();
+
+            // show the time of the operation in the message box
+            MessageBox.Show("Time: " + sw.ElapsedMilliseconds + " ms");
 
             // show messsage box for the total bytes
             MessageBox.Show("Total Bytes: " + total_bytes);

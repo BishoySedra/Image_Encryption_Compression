@@ -33,12 +33,17 @@ namespace ImageEncryptCompress
             return (bit_1 == bit_2) ? '0' : '1';
         }
 
+        // function to do Xoring between two bytes
+        public static byte XOR(byte a, byte b) // O(1)
+        {
+            return (byte)(a ^ b);
+        }
+        
         // function to convert from byte to integer
         public static int ByteToInt(byte b) // O(1)
         {
             return Convert.ToInt32(b);
         }
-
 
         // function to convert from integer to binary string consisting of 8 bits 
         public static string convertToBinary(int num) // O(1)
