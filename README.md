@@ -12,11 +12,11 @@ To successfully launch the project, follow these steps:
 
 1. Open the `.sln` file in your preferred IDE or text editor.
 
-2. Navigate to the `MainForm.cs` file and update the `ImagePath` string variable with a valid path where your encrypted or decrypted image will be saved. This ensures that the processed image is saved in the correct location.
+2. Navigate to the `ImageOperations.cs` file and update all string variables with valid paths to ensure the project runs correctly without problems.
 
-3. Navigate to the `ImageOperations.cs` file and update the `CompressionPath` string variable with a valid path. This ensures that the compressed image is saved in the correct location.
+3. Press `CTRL + F5` to run the project. This will compile and execute the application.
 
-4. Press `CTRL + F5` to run the project. This will compile and execute the application.
+### Open-Source Priority Queue Code
 
 For an open-source implementation of a priority queue, you can refer to the following link:
 
