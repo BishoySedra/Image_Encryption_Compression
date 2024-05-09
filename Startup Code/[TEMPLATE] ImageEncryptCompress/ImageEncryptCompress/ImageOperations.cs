@@ -389,10 +389,12 @@ namespace ImageEncryptCompress
             }
 
 
-            // construct the priority queue with the red frequency
+            // 3 priority queues for each color
             PriorityQueue pq_red = new PriorityQueue();
+            PriorityQueue pq_green = new PriorityQueue();
+            PriorityQueue pq_blue = new PriorityQueue();
 
-            // iterate over the red frequency array and insert the non-zero frequencies into the priority queue
+            // iterate over the frequency arrays and insert the non-zero frequencies into the priority queue
             for (int i = 0; i < 256; i++)
             {
                 if (redFreq[i] != 0)
@@ -405,14 +407,6 @@ namespace ImageEncryptCompress
                     node.Left = node.Right = null;
                     pq_red.Push(node);
                 }
-            }
-
-            //construct the priority queue with the blue frequency
-            PriorityQueue pq_blue = new PriorityQueue();
-
-            // iterate over the blue frequency array and insert the non-zero frequencies into the priority queue
-            for (int i = 0; i < 256; i++)
-            {
                 if (blueFreq[i] != 0)
                 {
                     HuffmanNode node = new HuffmanNode
@@ -423,14 +417,6 @@ namespace ImageEncryptCompress
                     node.Left = node.Right = null;
                     pq_blue.Push(node);
                 }
-            }
-
-            //construct the priority queue with the green frequency
-            PriorityQueue pq_green = new PriorityQueue();
-
-            // iterate over the green frequency array and insert the non-zero frequencies into the priority queue
-            for (int i = 0; i < 256; i++)
-            {
                 if (greenFreq[i] != 0)
                 {
                     HuffmanNode node = new HuffmanNode
@@ -442,7 +428,7 @@ namespace ImageEncryptCompress
                     pq_green.Push(node);
                 }
             }
-
+            
             // construct the huffman tree for the red channel
             while (pq_red.Count != 1)
             {
@@ -454,19 +440,6 @@ namespace ImageEncryptCompress
                 node.Left = largeFreq;
                 node.Right = smallFreq;
                 pq_red.Push(node);
-            }
-
-            // construct the huffman tree for the blue channel
-            while (pq_blue.Count != 1)
-            {
-                HuffmanNode node = new HuffmanNode();
-                HuffmanNode smallFreq = pq_blue.Pop();
-                HuffmanNode largeFreq = pq_blue.Pop();
-
-                node.Frequency = smallFreq.Frequency + largeFreq.Frequency;
-                node.Left = largeFreq;
-                node.Right = smallFreq;
-                pq_blue.Push(node);
             }
 
             // construct the huffman tree for the green channel
@@ -482,6 +455,19 @@ namespace ImageEncryptCompress
                 pq_green.Push(node);
             }
 
+            // construct the huffman tree for the blue channel
+            while (pq_blue.Count != 1)
+            {
+                HuffmanNode node = new HuffmanNode();
+                HuffmanNode smallFreq = pq_blue.Pop();
+                HuffmanNode largeFreq = pq_blue.Pop();
+
+                node.Frequency = smallFreq.Frequency + largeFreq.Frequency;
+                node.Left = largeFreq;
+                node.Right = smallFreq;
+                pq_blue.Push(node);
+            }
+
             // get the root node of the huffman tree for each channel
             HuffmanNode theRootNode = pq_red.Pop();
             HuffmanNode theRootNode2 = pq_blue.Pop();
@@ -491,12 +477,12 @@ namespace ImageEncryptCompress
             long green_total_bits = 0;
             long blue_total_bits = 0;
 
-            // create dictionaries to store the huffman representation of each color bit
+            // dictionaries to store the huffman representation of each color bit
             Dictionary<int, string> red_dict = new Dictionary<int, string>();
             Dictionary<int, string> blue_dict = new Dictionary<int, string>();
             Dictionary<int, string> green_dict = new Dictionary<int, string>();
 
-            // create a stream writer to write the huffman tree to a file
+            // stream writer to write the huffman tree to file
             StreamWriter stream = new StreamWriter(CompressionPath);
 
             // write the initial seed and tap position to the file
@@ -504,20 +490,19 @@ namespace ImageEncryptCompress
             stream.WriteLine("Tap Position: " + tapPosition);
 
             // write the huffman tree to a file with red channel
-            stream.WriteLine("Red - Frequency - Huffman Representation - Total Bits");
+//            stream.WriteLine("Red - Frequency - Huffman Representation - Total Bits");
             WriteHuffmanDict(theRootNode, null, red_dict, ref red_total_bits, stream);
 
             // write the huffman tree to a file with blue channel
-            stream.WriteLine("Blue - Frequency - Huffman Representation - Total Bits");
+//            stream.WriteLine("Blue - Frequency - Huffman Representation - Total Bits");
             WriteHuffmanDict(theRootNode2, null, blue_dict, ref blue_total_bits, stream);
 
             // write the huffman tree to a file with green channel
-            stream.WriteLine("Green - Frequency - Huffman Representation - Total Bits");
+//            stream.WriteLine("Green - Frequency - Huffman Representation - Total Bits");
             WriteHuffmanDict(theRootNode3, null, green_dict, ref green_total_bits, stream);
 
             // calculate the total bytes of the image for each channel
 
-            // red channel
             long red_bytes = red_total_bits / 8;
             long red_rem = (red_total_bits % 8);
             if (red_rem != 0)
@@ -542,7 +527,7 @@ namespace ImageEncryptCompress
             long total_bytes = red_bytes + blue_bytes + green_bytes;
 
             // write the total bytes of the image
-            stream.WriteLine("Total Bytes: " + total_bytes);
+            stream.WriteLine("total bytes: " + total_bytes);
 
             // write the compression ratio of the image
             long total_bits = red_total_bits + blue_total_bits + green_total_bits;
@@ -581,179 +566,161 @@ namespace ImageEncryptCompress
                 for (int j = 0; j < Width; j++) //o(w)
                 {
                     // red channel
-
                     // get the huffman representation of the pixel
                     huffman_string = red_dict[ImageMatrix[i, j].red]; // temp = huffman representation of pixel 0
                     huffman_string_length = huffman_string.Length;
                     // if the length of the huffman representation is less than the remaining bits in the byte
                     if (huffman_string_length < byte_remainder1)
                     {
-                        redBinaryRepresentationToWriteInFile[redIndex] <<= huffman_string_length; //o(1)-(put index in array && shift)
-                                                                                                  // 10101, arr[idx] = 0000 0000 => 0000 0000
-                        redBinaryRepresentationToWriteInFile[redIndex] += Convert.ToByte(huffman_string, 2); //o(1)-(put index in array && assignment && addition && convert)
-                                                                                                             // 0001 0101
-                        byte_remainder1 -= huffman_string_length; //o(1)-subtraction && assignment
+                        redBinaryRepresentationToWriteInFile[redIndex] <<= huffman_string_length; 
+                        redBinaryRepresentationToWriteInFile[redIndex] += Convert.ToByte(huffman_string, 2); 
+                        byte_remainder1 -= huffman_string_length; 
                     }
                     else if (huffman_string_length == byte_remainder1)
                     {
-                        // temp = "101"
-                        // ar = 8 - 5 = 3
-                        // hn shift left 00010101 f teb2a 10101000
-                        // "101" = 3 => arr[idx] = 10101000 => arr[idx] += "101" => 1010 1101
-                        redBinaryRepresentationToWriteInFile[redIndex] <<= huffman_string_length; ////o(1)-(put index in array && shift)
-                        redBinaryRepresentationToWriteInFile[redIndex] += Convert.ToByte(huffman_string, 2); //o(1)-(put index in array && assignment && addition && convert)
-                        redIndex++; // o(1)-addition && assignment 
-                        byte_remainder1 = 8; //o(1)-assignment
+                        redBinaryRepresentationToWriteInFile[redIndex] <<= huffman_string_length;
+                        redBinaryRepresentationToWriteInFile[redIndex] += Convert.ToByte(huffman_string, 2);
+                        redIndex++;
+                        byte_remainder1 = 8;
                     }
                     else
                     {
-                        huffman_substr = huffman_string.Substring(0, byte_remainder1);  //o(1) - assignment && substring
-                        redBinaryRepresentationToWriteInFile[redIndex] <<= byte_remainder1; //o(1)-(put index in array && shift)
-                        redBinaryRepresentationToWriteInFile[redIndex] += Convert.ToByte(huffman_substr, 2);  //o(1)-(put index in array && assignment && addition && convert)
-                        redIndex++; //o(1)-addition && assignment
-                        huffman_string = huffman_string.Substring(byte_remainder1, huffman_string.Length - byte_remainder1);//o(1) - assignment && substring
+                        huffman_substr = huffman_string.Substring(0, byte_remainder1);
+                        redBinaryRepresentationToWriteInFile[redIndex] <<= byte_remainder1;
+                        redBinaryRepresentationToWriteInFile[redIndex] += Convert.ToByte(huffman_substr, 2);
+                        redIndex++;
+                        huffman_string = huffman_string.Substring(byte_remainder1, huffman_string.Length - byte_remainder1);
 
-                        while (huffman_string.Length >= 8) //o(1) AS temp size is limited to 32
+                        while (huffman_string.Length >= 8) 
                         {
-                            huffman_substr = huffman_string.Substring(0, 8); //o(1)-assignment && substring
-                            redBinaryRepresentationToWriteInFile[redIndex] <<= 8; //o(1)-(put index in array && shift)
-                            redBinaryRepresentationToWriteInFile[redIndex] += Convert.ToByte(huffman_substr, 2); //o(1)-(put index in array && assignment && addition && convert)
-                            redIndex++; //o(1)-addition && assignment
-                            huffman_string = huffman_string.Substring(8, huffman_string.Length - 8); //o(1) - assignment && substring
+                            huffman_substr = huffman_string.Substring(0, 8); 
+                            redBinaryRepresentationToWriteInFile[redIndex] <<= 8;
+                            redBinaryRepresentationToWriteInFile[redIndex] += Convert.ToByte(huffman_substr, 2); 
+                            redIndex++;
+                            huffman_string = huffman_string.Substring(8, huffman_string.Length - 8);
                         }
-                        if (huffman_string.Length != 0) //o(1)
+                        if (huffman_string.Length != 0)
                         {
-                            redBinaryRepresentationToWriteInFile[redIndex] <<= huffman_string.Length; //o(1)-(put index in array && shift)
-                            redBinaryRepresentationToWriteInFile[redIndex] += Convert.ToByte(huffman_string, 2); //o(1)-(put index in array && assignment && addition && convert)
-                            byte_remainder1 = 8 - huffman_string.Length; // o(1) - assignment
+                            redBinaryRepresentationToWriteInFile[redIndex] <<= huffman_string.Length;
+                            redBinaryRepresentationToWriteInFile[redIndex] += Convert.ToByte(huffman_string, 2);
+                            byte_remainder1 = 8 - huffman_string.Length;
                         }
                         else
                         {
-                            byte_remainder1 = 8; //o(1) - assignment
+                            byte_remainder1 = 8;
                         }
                     }
 
                     // blue channel
-                    huffman_string = blue_dict[ImageMatrix[i, j].blue]; // temp = huffman representation of pixel 0
+                    huffman_string = blue_dict[ImageMatrix[i, j].blue];
                     huffman_string_length = huffman_string.Length;
-                    if (huffman_string_length < byte_remainder2) // if length of bits < 8 then arr[0] <<= number of bits (<8)
+                    if (huffman_string_length < byte_remainder2)
                     {
-                        blueBinaryRepresentationToWriteInFile[blueIndex] <<= huffman_string_length; //o(1)-(put index in array && shift)
-                                                                                                    // 10101, arr[idx] = 0000 0000 => 0000 0000
-                        blueBinaryRepresentationToWriteInFile[blueIndex] += Convert.ToByte(huffman_string, 2); //o(1)-(put index in array && assignment && addition && convert)
-                                                                                                               // 0001 0101
-                        byte_remainder2 -= huffman_string_length; //o(1)-subtraction && assignment
+                        blueBinaryRepresentationToWriteInFile[blueIndex] <<= huffman_string_length;
+                        blueBinaryRepresentationToWriteInFile[blueIndex] += Convert.ToByte(huffman_string, 2); 
+                        byte_remainder2 -= huffman_string_length;
                     }
                     else if (huffman_string_length == byte_remainder2)
                     {
-                        // temp = "101"
-                        // ar = 8 - 5 = 3
-                        // hn shift left 00010101 f teb2a 10101000
-                        // "101" = 3 => arr[idx] = 10101000 => arr[idx] += "101" => 1010 1101
-                        blueBinaryRepresentationToWriteInFile[blueIndex] <<= huffman_string_length; ////o(1)-(put index in array && shift)
-                        blueBinaryRepresentationToWriteInFile[blueIndex] += Convert.ToByte(huffman_string, 2); //o(1)-(put index in array && assignment && addition && convert)
-                        blueIndex++; // o(1)-addition && assignment 
-                        byte_remainder2 = 8; //o(1)-assignment
+                        blueBinaryRepresentationToWriteInFile[blueIndex] <<= huffman_string_length;
+                        blueBinaryRepresentationToWriteInFile[blueIndex] += Convert.ToByte(huffman_string, 2);
+                        blueIndex++; 
+                        byte_remainder2 = 8;
                     }
                     else
                     {
-                        huffman_substr = huffman_string.Substring(0, byte_remainder2); //o(1) - assignment && substring
-                        blueBinaryRepresentationToWriteInFile[blueIndex] <<= byte_remainder2; //o(1)-(put index in array && shift)
-                        blueBinaryRepresentationToWriteInFile[blueIndex] += Convert.ToByte(huffman_substr, 2);  //o(1)-(put index in array && assignment && addition && convert)
-                        blueIndex++; //o(1)-addition && assignment
-                        huffman_string = huffman_string.Substring(byte_remainder2, huffman_string_length - byte_remainder2);//o(1) - assignment && substring
+                        huffman_substr = huffman_string.Substring(0, byte_remainder2); 
+                        blueBinaryRepresentationToWriteInFile[blueIndex] <<= byte_remainder2; 
+                        blueBinaryRepresentationToWriteInFile[blueIndex] += Convert.ToByte(huffman_substr, 2);  
+                        blueIndex++; 
+                        huffman_string = huffman_string.Substring(byte_remainder2, huffman_string_length - byte_remainder2);
 
-                        while (huffman_string.Length >= 8) //o(1) AS temp size is limited to 32
+                        while (huffman_string.Length >= 8)
                         {
-                            huffman_substr = huffman_string.Substring(0, 8); //o(1)-assignment && substring
-                            blueBinaryRepresentationToWriteInFile[blueIndex] <<= 8; //o(1)-(put index in array && shift)
-                            blueBinaryRepresentationToWriteInFile[blueIndex] += Convert.ToByte(huffman_substr, 2); //o(1)-(put index in array && assignment && addition && convert)
-                            blueIndex++; //o(1)-addition && assignment
-                            huffman_string = huffman_string.Substring(8, huffman_string.Length - 8); //o(1) - assignment && substring
+                            huffman_substr = huffman_string.Substring(0, 8);
+                            blueBinaryRepresentationToWriteInFile[blueIndex] <<= 8; 
+                            blueBinaryRepresentationToWriteInFile[blueIndex] += Convert.ToByte(huffman_substr, 2);
+                            blueIndex++;
+                            huffman_string = huffman_string.Substring(8, huffman_string.Length - 8);
                         }
-                        if (huffman_string.Length != 0) //o(1)
+                        if (huffman_string.Length != 0)
                         {
-                            blueBinaryRepresentationToWriteInFile[blueIndex] <<= huffman_string.Length; //o(1)-(put index in array && shift)
-                            blueBinaryRepresentationToWriteInFile[blueIndex] += Convert.ToByte(huffman_string, 2); //o(1)-(put index in array && assignment && addition && convert)
-                            byte_remainder2 = 8 - huffman_string.Length; // o(1) - assignment
+                            blueBinaryRepresentationToWriteInFile[blueIndex] <<= huffman_string.Length; 
+                            blueBinaryRepresentationToWriteInFile[blueIndex] += Convert.ToByte(huffman_string, 2);
+                            byte_remainder2 = 8 - huffman_string.Length; 
                         }
-                        else
-                            byte_remainder2 = 8; //o(1) - assignment
+                        else {
+                            byte_remainder2 = 8; 
+                        }
                     }
 
                     // green channel
-                    huffman_string = green_dict[ImageMatrix[i, j].green]; // temp = huffman representation of pixel 0
+                    huffman_string = green_dict[ImageMatrix[i, j].green];
                     huffman_string_length = huffman_string.Length;
-                    if (huffman_string_length < byte_remainder3) // if length of bits < 8 then arr[0] <<= number of bits (<8)
+                    if (huffman_string_length < byte_remainder3) 
                     {
-                        greenBinaryRepresentationToWriteInFile[greenIndex] <<= huffman_string_length; //o(1)-(put index in array && shift)
-                                                                                                      // 10101, arr[idx] = 0000 0000 => 0000 0000
-                        greenBinaryRepresentationToWriteInFile[greenIndex] += Convert.ToByte(huffman_string, 2); //o(1)-(put index in array && assignment && addition && convert)
-                                                                                                                 // 0001 0101
-                        byte_remainder3 -= huffman_string_length; //o(1)-subtraction && assignment
+                        greenBinaryRepresentationToWriteInFile[greenIndex] <<= huffman_string_length; 
+                        greenBinaryRepresentationToWriteInFile[greenIndex] += Convert.ToByte(huffman_string, 2); 
+                        byte_remainder3 -= huffman_string_length; 
                     }
                     else if (huffman_string_length == byte_remainder3)
                     {
-                        // temp = "101"
-                        // ar = 8 - 5 = 3
-                        // hn shift left 00010101 f teb2a 10101000
-                        // "101" = 3 => arr[idx] = 10101000 => arr[idx] += "101" => 1010 1101
-                        greenBinaryRepresentationToWriteInFile[greenIndex] <<= huffman_string_length; ////o(1)-(put index in array && shift)
-                        greenBinaryRepresentationToWriteInFile[greenIndex] += Convert.ToByte(huffman_string, 2); //o(1)-(put index in array && assignment && addition && convert)
-                        greenIndex++; // o(1)-addition && assignment 
-                        byte_remainder3 = 8; //o(1)-assignment
+                        greenBinaryRepresentationToWriteInFile[greenIndex] <<= huffman_string_length; 
+                        greenBinaryRepresentationToWriteInFile[greenIndex] += Convert.ToByte(huffman_string, 2); 
+                        greenIndex++; 
+                        byte_remainder3 = 8; 
                     }
                     else
                     {
-                        huffman_substr = huffman_string.Substring(0, byte_remainder3); //o(1) - assignment && substring
-                        greenBinaryRepresentationToWriteInFile[greenIndex] <<= byte_remainder3; //o(1)-(put index in array && shift)
-                        greenBinaryRepresentationToWriteInFile[greenIndex] += Convert.ToByte(huffman_substr, 2);  //o(1)-(put index in array && assignment && addition && convert)
-                        greenIndex++; //o(1)-addition && assignment
+                        huffman_substr = huffman_string.Substring(0, byte_remainder3); 
+                        greenBinaryRepresentationToWriteInFile[greenIndex] <<= byte_remainder3; 
+                        greenBinaryRepresentationToWriteInFile[greenIndex] += Convert.ToByte(huffman_substr, 2);  
+                        greenIndex++; 
                         huffman_string = huffman_string.Substring(byte_remainder3, huffman_string_length - byte_remainder3);//o(1) - assignment && substring
 
-                        while (huffman_string.Length >= 8) //o(1) AS temp size is limited to 32
+                        while (huffman_string.Length >= 8) 
                         {
-                            huffman_substr = huffman_string.Substring(0, 8); //o(1)-assignment && substring
-                            greenBinaryRepresentationToWriteInFile[greenIndex] <<= 8; //o(1)-(put index in array && shift)
-                            greenBinaryRepresentationToWriteInFile[greenIndex] += Convert.ToByte(huffman_substr, 2); //o(1)-(put index in array && assignment && addition && convert)
-                            greenIndex++; //o(1)-addition && assignment
-                            huffman_string = huffman_string.Substring(8, huffman_string.Length - 8); //o(1) - assignment && substring
+                            huffman_substr = huffman_string.Substring(0, 8); 
+                            greenBinaryRepresentationToWriteInFile[greenIndex] <<= 8; 
+                            greenBinaryRepresentationToWriteInFile[greenIndex] += Convert.ToByte(huffman_substr, 2); 
+                            greenIndex++; 
+                            huffman_string = huffman_string.Substring(8, huffman_string.Length - 8); 
                         }
 
-                        if (huffman_string.Length != 0) //o(1)
+                        if (huffman_string.Length != 0) 
                         {
-                            greenBinaryRepresentationToWriteInFile[greenIndex] <<= huffman_string.Length; //o(1)-(put index in array && shift)
-                            greenBinaryRepresentationToWriteInFile[greenIndex] += Convert.ToByte(huffman_string, 2); //o(1)-(put index in array && assignment && addition && convert)
-                            byte_remainder3 = 8 - huffman_string.Length; // o(1) - assignment
+                            greenBinaryRepresentationToWriteInFile[greenIndex] <<= huffman_string.Length; 
+                            greenBinaryRepresentationToWriteInFile[greenIndex] += Convert.ToByte(huffman_string, 2);
+                            byte_remainder3 = 8 - huffman_string.Length;
                         }
                         else
                         {
-                            byte_remainder3 = 8; //o(1) - assignment
+                            byte_remainder3 = 8; 
                         }
                     }
                 }
             }
 
-            byte[] redFreqByteArr = new byte[1024];//o(1) (assignment)
-            byte[] greenFreqByteArr = new byte[1024];//o(1) (assignment)
-            byte[] blueFreqByteArr = new byte[1024];//o(1) (assignment)
+            byte[] redFreqByteArr = new byte[1024];
+            byte[] greenFreqByteArr = new byte[1024];
+            byte[] blueFreqByteArr = new byte[1024];
 
             for (int i = 0; i < 256; i++)
             {
-                Array.Copy(BitConverter.GetBytes(redFreq[i]), 0, redFreqByteArr, i * 4, 4);//o(nlon)(number of iterations*4 && copy to array)
-                Array.Copy(BitConverter.GetBytes(greenFreq[i]), 0, greenFreqByteArr, i * 4, 4);//o(nlon)(number of iterations*4 && copy to array)
-                Array.Copy(BitConverter.GetBytes(blueFreq[i]), 0, blueFreqByteArr, i * 4, 4);//o(nlon)(number of iterations*4 && copy to array)
+                Array.Copy(BitConverter.GetBytes(redFreq[i]), 0, redFreqByteArr, i * 4, 4);
+                Array.Copy(BitConverter.GetBytes(greenFreq[i]), 0, greenFreqByteArr, i * 4, 4);
+                Array.Copy(BitConverter.GetBytes(blueFreq[i]), 0, blueFreqByteArr, i * 4, 4);
             }
 
             FileStream ffs = new FileStream(compressedImageDataPath, FileMode.Truncate);
             StreamWriter ffss = new StreamWriter(ffs);
-            ffss.WriteLine(red_bytes);//o(1) (write in file)
-            ffss.WriteLine(green_bytes);//o(1) (write in file)
-            ffss.WriteLine(blue_bytes);//o(1) (write in file)
+            ffss.WriteLine(red_bytes);
+            ffss.WriteLine(green_bytes);
+            ffss.WriteLine(blue_bytes);
 
-            ffss.WriteLine(red_rem);//o(1) (write in file)
-            ffss.WriteLine(green_rem);//o(1) (write in file)
-            ffss.WriteLine(blue_rem);//o(1) (write in file)
+            ffss.WriteLine(red_rem);
+            ffss.WriteLine(green_rem);
+            ffss.WriteLine(blue_rem);
 
             ffss.Close();
             ffs.Close();
@@ -766,9 +733,9 @@ namespace ImageEncryptCompress
             binWriter.Write(greenFreqByteArr);
             binWriter.Write(blueFreqByteArr);
 
-            binWriter.Write(redBinaryRepresentationToWriteInFile);//o(1) (write in file)
-            binWriter.Write(greenBinaryRepresentationToWriteInFile);//o(1) (write in file)  
-            binWriter.Write(blueBinaryRepresentationToWriteInFile);//o(1) (write in file)
+            binWriter.Write(redBinaryRepresentationToWriteInFile);
+            binWriter.Write(greenBinaryRepresentationToWriteInFile);
+            binWriter.Write(blueBinaryRepresentationToWriteInFile);
 
             binWriter.Write(seedValue);
             binWriter.Write(tapPosition);
@@ -815,23 +782,24 @@ namespace ImageEncryptCompress
             byte[] greenFreqInBytes = binary_reader.ReadBytes(1024);
             byte[] blueFreqInBytes = binary_reader.ReadBytes(1024);
 
-            // rgb arrs to store 
+            // rgb int arrs to store frequencies read from binary file
             int[] redFreq = new int[256];
             int[] greenFreq = new int[256];
             int[] blueFreq = new int[256];
 
+            // priority queues for rgb to construct the tree
             PriorityQueue pq_red = new PriorityQueue();
             PriorityQueue pq_green = new PriorityQueue();
             PriorityQueue pq_blue = new PriorityQueue();
 
-            for (int i = 0; i < 1024; i += 4)//o(1) this loop take 4 bytes and compress them to one int32 value
+            for (int i = 0; i < 1024; i += 4)
             {
                 redFreq[i / 4] = BitConverter.ToInt32(redFreqInBytes, i);
                 greenFreq[i / 4] = BitConverter.ToInt32(greenFreqInBytes, i);
                 blueFreq[i / 4] = BitConverter.ToInt32(blueFreqInBytes, i);
             }
 
-            for (int i = 0; i < 256; i++)//o(1) this loop add in the lists that it's value is not 0
+            for (int i = 0; i < 256; i++)
             {
                 if (redFreq[i] != 0)
                 {
@@ -866,7 +834,7 @@ namespace ImageEncryptCompress
             }
 
 
-            // construct the huffman tree for the red channel
+            // huffman tree for the red channel
             while (pq_red.Count != 1)
             {
                 HuffmanNode node = new HuffmanNode();
@@ -879,7 +847,7 @@ namespace ImageEncryptCompress
                 pq_red.Push(node);
             }
 
-            // construct the huffman tree for the green channel
+            // huffman tree for the green channel
             while (pq_green.Count != 1)
             {
                 HuffmanNode node = new HuffmanNode();
@@ -892,7 +860,7 @@ namespace ImageEncryptCompress
                 pq_green.Push(node);
             }
 
-            // construct the huffman tree for the red channel
+            // huffman tree for the blue channel
             while (pq_blue.Count != 1)
             {
                 HuffmanNode node = new HuffmanNode();
@@ -905,73 +873,68 @@ namespace ImageEncryptCompress
                 pq_blue.Push(node);
             }
 
+            // extract the roots of the rgb trees
             HuffmanNode rootNodeRed = pq_red.Pop();
             HuffmanNode rootNodeGreen = pq_green.Pop();
             HuffmanNode rootNodeBlue = pq_blue.Pop();
 
-            //o(1) read from the file the red bytes compressed values
+            //read from the file the red, green, blue bytes compressed values
             byte[] compressed_red = binary_reader.ReadBytes(red_length);
-
-
-            //o(1) read from the file the green bytes compressed values
             byte[] compressed_green = binary_reader.ReadBytes(green_length);
-
-
-            //o(1) read from the file the blue bytes compressed values
             byte[] compressed_blue = binary_reader.ReadBytes(blue_length);
 
-            seedValue = binary_reader.ReadString();// o(1) get the seed from the file 
-            seedKey = binary_reader.ReadInt32();// o(1) get the tape from the file
+            seedValue = binary_reader.ReadString(); 
+            seedKey = binary_reader.ReadInt32();
 
-            int Width = binary_reader.ReadInt32();// o(1) get the width from the file
-            int Height = binary_reader.ReadInt32();// o(1) get the heigth from the file 
+            int Width = binary_reader.ReadInt32();
+            int Height = binary_reader.ReadInt32();
 
             binary_reader.Close();
             binaryReadingStream.Close();
-            //            Tape_Position = tap_position;//o(1) save it to he global value
-            //            Initial_Seed = seed;//o(1) save it to the global value            
+            //Tape_Position = tap_position;//o(1) save it to he global value
+            //Initial_Seed = seed;//o(1) save it to the global value            
 
             // 3 lists to save colors values that would end in 3*(N^2) space
-            List<int> redPixels = new List<int>();//o(1) 
-            List<int> greenPixels = new List<int>();//o(1) 
-            List<int> bluePixels = new List<int>();//o(1) 
+            List<int> redPixels = new List<int>();
+            List<int> greenPixels = new List<int>(); 
+            List<int> bluePixels = new List<int>(); 
 
-            byte byteValue = 128; //o(1) assigment to get the bits from the byte color
-            //1st iter: 1000 0000, 2nd: 0100 0000, 3rd: 0010 0000, 4th: 0001 0000, 5th: 0000 1000, 6th: 0000 0100
-            int currBitCount = 0; // o(1) assigment that count to 8 to get the value of one byte
-            HuffmanNode rootNode1 = rootNodeRed; // o(1) assigment that point to the top node in huffman
+            byte byteValue = 128;
+            // 1st iter: 1000 0000, 2nd: 0100 0000, 3rd: 0010 0000, 4th: 0001 0000, 5th: 0000 1000, 6th: 0000 0100
+            int currBitCount = 0;
+            HuffmanNode rootNode1 = rootNodeRed; 
 
             int cnt = 0;
             long crl = compressed_red.Length;
 
-            while (cnt < crl) //o(s.length)
+            while (cnt < crl) 
             {
-                while (currBitCount < 8) //o(1) this loop count until the byte read all 
+                while (currBitCount < 8)
                 {
-                    byte hettaOS = (byte)(compressed_red[cnt] & byteValue); //o(1) assigmrnt to get the spceific bit
-                    HuffmanNode tempNode; //o(1) call the function to get the next node according to the bit value
-                    if (hettaOS == 0) //o(1) Assigment
-                        tempNode = rootNode1.Left; //o(1)return
+                    byte hettaOS = (byte)(compressed_red[cnt] & byteValue); 
+                    HuffmanNode tempNode; 
+                    if (hettaOS == 0) 
+                        tempNode = rootNode1.Left; 
                     else
-                        tempNode = rootNode1.Right; //o(1)return
+                        tempNode = rootNode1.Right; 
 
-                    if (tempNode.Left == null && tempNode.Right == null) //o(1) check that the cuurent node is a leaf node
+                    if (tempNode.Left == null && tempNode.Right == null) 
                     {
-                        redPixels.Add(tempNode.Pixel); // o(1) add to the list the value of the cuurent color
-                        rootNode1 = rootNodeRed; // O(1) make search start from the root or the huffman
+                        redPixels.Add(tempNode.Pixel);
+                        rootNode1 = rootNodeRed;
                     }
                     else
                     {
-                        rootNode1 = tempNode; //o(1)make the start node is the current node
+                        rootNode1 = tempNode;
                     }
 
-                    byteValue /= 2; // o(1)  divide the var to get the next bit 
-                    currBitCount++; // o(1) read another 8 bits
+                    byteValue /= 2; // divide to compare with the bit on the right 
+                    currBitCount++; // increment counter to go compare the bit to the right
                 }
 
-                cnt++; // o(1) go to the next list value to save on it
-                currBitCount = 0; // o(1) reset the counter
-                byteValue = 128; // o(1) reset the var to make it point to the first bit
+                cnt++;
+                currBitCount = 0;
+                byteValue = 128; 
             }
 
             byteValue = 128;
@@ -980,34 +943,34 @@ namespace ImageEncryptCompress
             cnt = 0;
             long cgl = compressed_green.Length;
 
-            while (cnt < cgl) //o(s.length)
+            while (cnt < cgl) 
             {
-                while (currBitCount < 8) //o(1) this loop count until the byte read all 
+                while (currBitCount < 8) 
                 {
-                    byte hettaOS = (byte)(compressed_green[cnt] & byteValue); //o(1) assigmrnt to get the spceific bit
-                    HuffmanNode tempNode; //o(1) call the function to get the next node according to the bit value
-                    if (hettaOS == 0) //o(1) Assigment
-                        tempNode = rootNode1.Left; //o(1)return
+                    byte hettaOS = (byte)(compressed_green[cnt] & byteValue); 
+                    HuffmanNode tempNode; 
+                    if (hettaOS == 0) 
+                        tempNode = rootNode1.Left; 
                     else
-                        tempNode = rootNode1.Right; //o(1)return
+                        tempNode = rootNode1.Right; 
 
-                    if (tempNode.Left == null && tempNode.Right == null) //o(1) check that the cuurent node is a leaf node
+                    if (tempNode.Left == null && tempNode.Right == null) 
                     {
-                        greenPixels.Add(tempNode.Pixel); // o(1) add to the list the value of the cuurent color
-                        rootNode1 = rootNodeGreen; // O(1) make search start from the root or the huffman
+                        greenPixels.Add(tempNode.Pixel); 
+                        rootNode1 = rootNodeGreen; 
                     }
                     else
                     {
-                        rootNode1 = tempNode; //o(1)make the start node is the current node
+                        rootNode1 = tempNode; 
                     }
 
-                    byteValue /= 2; // o(1)  divide the var to get the next bit 
-                    currBitCount++; // o(1) read another 8 bits
+                    byteValue /= 2; // divide to compare with the bit on the right 
+                    currBitCount++; // increment counter to go compare the bit to the right
 
                 }
-                cnt++; // o(1) go to the next list value to save on it
-                currBitCount = 0; // o(1) reset the counter
-                byteValue = 128; // o(1) reset the var to make it point to the first bit
+                cnt++;
+                currBitCount = 0;
+                byteValue = 128;
             }
 
             byteValue = 128;
@@ -1016,33 +979,33 @@ namespace ImageEncryptCompress
             cnt = 0;
             long cbl = compressed_blue.Length;
 
-            while (cnt < cbl) //o(s.length)
+            while (cnt < cbl) 
             {
-                while (currBitCount < 8) //o(1) this loop count until the byte read all 
+                while (currBitCount < 8)
                 {
-                    byte hettaOS = (byte)(compressed_blue[cnt] & byteValue); //o(1) assigmrnt to get the spceific bit
-                    HuffmanNode tempNode; //o(1) call the function to get the next node according to the bit value
-                    if (hettaOS == 0) //o(1) Assigment
-                        tempNode = rootNode1.Left; //o(1)return
+                    byte hettaOS = (byte)(compressed_blue[cnt] & byteValue); 
+                    HuffmanNode tempNode; 
+                    if (hettaOS == 0) 
+                        tempNode = rootNode1.Left; 
                     else
-                        tempNode = rootNode1.Right; //o(1)return
+                        tempNode = rootNode1.Right; 
 
-                    if (tempNode.Left == null && tempNode.Right == null) //o(1) check that the cuurent node is a leaf node
+                    if (tempNode.Left == null && tempNode.Right == null) 
                     {
-                        bluePixels.Add(tempNode.Pixel); // o(1) add to the list the value of the cuurent color
-                        rootNode1 = rootNodeBlue; // O(1) make search start from the root or the huffman
+                        bluePixels.Add(tempNode.Pixel); 
+                        rootNode1 = rootNodeBlue; 
                     }
                     else
                     {
-                        rootNode1 = tempNode; //o(1)make the start node is the current node
+                        rootNode1 = tempNode; 
                     }
 
-                    byteValue /= 2; // o(1)  divide the var to get the next bit 
-                    currBitCount++; // o(1) read another 8 bits
+                    byteValue /= 2; // divide to compare with the bit on the right 
+                    currBitCount++; // increment counter to go compare the bit to the right
                 }
-                cnt++; // o(1) go to the next list value to save on it
-                currBitCount = 0; // o(1) reset the counter
-                byteValue = 128; // o(1) reset the var to make it point to the first bit
+                    cnt++; 
+                currBitCount = 0; 
+                byteValue = 128; 
             }
 
             RGBPixel[,] decompressedPicture = new RGBPixel[Height, Width];
@@ -1052,9 +1015,9 @@ namespace ImageEncryptCompress
             int greenLength = greenPixels.Count;
             int blueLength = bluePixels.Count;
 
-            for (int i = 0; i < Height; i++)//o(H)
+            for (int i = 0; i < Height; i++)
             {
-                for (int j = 0; j < Width; j++)//o(W)
+                for (int j = 0; j < Width; j++)
                 {
                     if (index < redLength && index < greenLength && index < blueLength)
                     {
