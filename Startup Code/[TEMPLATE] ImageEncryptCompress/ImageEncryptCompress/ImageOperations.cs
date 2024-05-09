@@ -39,7 +39,7 @@ namespace ImageEncryptCompress
         public static bool isEncrypted = false;
 
         // path for text file of the huffman tree and some other data
-        public static string CompressionPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\RGB-Tree.txt";
+        //public static string CompressionPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\RGB-Tree.txt";
 
         // path for binary file
         public static string BinaryWriterPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\Binary.bin";
@@ -55,23 +55,23 @@ namespace ImageEncryptCompress
         public static string DecompressedImagePath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Decompression\\Decompressed.bmp";
 
         // paths for the huffman representations for each color channel of each pixel
-        public static string CompressedRedPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\R-Tree.txt";
-        public static string CompressedGreenPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\G-Tree.txt";
-        public static string CompressedBluePath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\B-Tree.txt";
+        //public static string CompressedRedPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\R-Tree.txt";
+        //public static string CompressedGreenPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\G-Tree.txt";
+        //public static string CompressedBluePath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\B-Tree.txt";
 
         // paths for compressed binary strings for each color channel of each pixel
-        public static string CompressedRedBinaryPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\R-Binary.bin";
-        public static string CompressedGreenBinaryPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\G-Binary.bin";
-        public static string CompressedBlueBinaryPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\B-Binary.bin";
+        //public static string CompressedRedBinaryPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\R-Binary.bin";
+        //public static string CompressedGreenBinaryPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\G-Binary.bin";
+        //public static string CompressedBlueBinaryPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\B-Binary.bin";
 
-        public static int red_length = 0, green_length = 0, blue_length = 0, Tape_Position = 0;
-        public static int[] R, G, B;
-        public static float matrix_dimintion = 0;
-        public static long red_bytes = 0, green_bytes = 0, blue_bytes = 0, Total_Bits = 0;
-        public static string Initial_Seed = "";
-        public static string[] arr_red, arr_gr, arr_bl;
+        //public static int red_length = 0, green_length = 0, blue_length = 0, Tape_Position = 0;
+        //public static int[] R, G, B;
+        //public static float matrix_dimintion = 0;
+        //public static long red_bytes = 0, green_bytes = 0, blue_bytes = 0, Total_Bits = 0;
+        //public static string Initial_Seed = "";
+        //public static string[] arr_red, arr_gr, arr_bl;
 
-        public static byte[] arr, arr1, arr2;
+        //public static byte[] arr, arr1, arr2;
 
         public static RGBPixel[,] OpenImage(string ImagePath)
         {
@@ -193,7 +193,7 @@ namespace ImageEncryptCompress
 
         // function to get the k-bit shift register for each color channel
         // O(k * 3) where k here is always 8, so O(24) = O(1)
-        public static string[] getKbitSLFSR(string initialSeed, int tapPosition, int k)
+        public static string[] GetKbitSLFSR(string initialSeed, int tapPosition, int k)
         {
             // 0 == > red, 1 ==> green, 2 ==> blue
             string[] results = new string[3];
@@ -264,7 +264,7 @@ namespace ImageEncryptCompress
                 {
                     // get the LFSR keys for each color channel
                     // O(1)
-                    keys = getKbitSLFSR(seedValue, tapPosition, 8);
+                    keys = GetKbitSLFSR(seedValue, tapPosition, 8);
 
                     // get the RGB values of the pixel
                     // O(1)
@@ -281,7 +281,6 @@ namespace ImageEncryptCompress
                     byte encryptedRedByte = (byte)(red ^ redBinaryByte);
                     byte encryptedGreenByte = (byte)(green ^ greenBinaryByte);
                     byte encryptedBlueByte = (byte)(blue ^ blueBinaryByte);
-                    
 
                     // update the encrypted image matrix with the encrypted pixel
                     // O(1)
@@ -295,7 +294,7 @@ namespace ImageEncryptCompress
         }
 
         // function to export the image to a file
-        public static void ExportImage(RGBPixel[,] ImageMatrix, string FilePath)
+        public static void SaveImage(RGBPixel[,] ImageMatrix, string FilePath)
         {
             int Height = ImageMatrix.GetLength(0);
             int Width = ImageMatrix.GetLength(1);
@@ -328,14 +327,52 @@ namespace ImageEncryptCompress
         }
 
         // helper function to write the huffman tree to a file
-        public static void WriteHuffmanDict(HuffmanNode root, string s, Dictionary<int, string> dict, ref long Total_Bits, StreamWriter stream)
+        //public static void WriteHuffmanDict(HuffmanNode root, string s, Dictionary<int, string> dict, ref long Total_Bits, StreamWriter stream)
+        //{
+        //    // Assign 0 to the left node and recur
+        //    if (root.Left != null)
+        //    {
+        //        s += '0';
+        //        //                    arr[top] = 0;
+        //        WriteHuffmanDict(root.Left, s, dict, ref Total_Bits, stream);
+
+        //        // backtracking
+        //        s = s.Remove(s.Length - 1);
+        //    }
+
+        //    // Assign 1 to the right node and recur
+        //    if (root.Right != null)
+        //    {
+        //        s += '1';
+        //        //                    arr[top] = 1;
+        //        WriteHuffmanDict(root.Right, s, dict, ref Total_Bits, stream);
+
+        //        // backtracking
+        //        s = s.Remove(s.Length - 1);
+        //    }
+
+
+        //    if (root.Left == null && root.Right == null)
+        //    {
+        //        dict.Add(root.Pixel, s);
+
+        //        int bittat = s.Length * root.Frequency;
+
+        //        stream.WriteLine(root.Pixel + " " + s);
+
+        //        Total_Bits += bittat;
+
+        //    }
+        //}
+
+        public static void WriteHuffmanDict(HuffmanNode root, string s, Dictionary<int, string> dict, ref long Total_Bits)
         {
             // Assign 0 to the left node and recur
             if (root.Left != null)
             {
                 s += '0';
                 //                    arr[top] = 0;
-                WriteHuffmanDict(root.Left, s, dict, ref Total_Bits, stream);
+                WriteHuffmanDict(root.Left, s, dict, ref Total_Bits);
 
                 // backtracking
                 s = s.Remove(s.Length - 1);
@@ -346,7 +383,7 @@ namespace ImageEncryptCompress
             {
                 s += '1';
                 //                    arr[top] = 1;
-                WriteHuffmanDict(root.Right, s, dict, ref Total_Bits, stream);
+                WriteHuffmanDict(root.Right, s, dict, ref Total_Bits);
 
                 // backtracking
                 s = s.Remove(s.Length - 1);
@@ -359,14 +396,12 @@ namespace ImageEncryptCompress
 
                 int bittat = s.Length * root.Frequency;
 
-                stream.WriteLine(root.Pixel + " " + s);
-
                 Total_Bits += bittat;
 
             }
         }
 
-        public static long CompressImage(RGBPixel[,] ImageMatrix, int tapPosition, string seedValue)
+        public static KeyValuePair<long,double> CompressImage(RGBPixel[,] ImageMatrix, int tapPosition, string seedValue)
         {
             // get the height and width of the image
             int Height = GetHeight(ImageMatrix);
@@ -483,23 +518,26 @@ namespace ImageEncryptCompress
             Dictionary<int, string> green_dict = new Dictionary<int, string>();
 
             // stream writer to write the huffman tree to file
-            StreamWriter stream = new StreamWriter(CompressionPath);
+            //StreamWriter stream = new StreamWriter(CompressionPath);
 
             // write the initial seed and tap position to the file
-            stream.WriteLine("Initial Seed: " + seedValue);
-            stream.WriteLine("Tap Position: " + tapPosition);
+            //stream.WriteLine("Initial Seed: " + seedValue);
+            //stream.WriteLine("Tap Position: " + tapPosition);
 
             // write the huffman tree to a file with red channel
-//            stream.WriteLine("Red - Frequency - Huffman Representation - Total Bits");
-            WriteHuffmanDict(theRootNode, null, red_dict, ref red_total_bits, stream);
+            //            stream.WriteLine("Red - Frequency - Huffman Representation - Total Bits");
+            //WriteHuffmanDict(theRootNode, null, red_dict, ref red_total_bits, stream);
+            WriteHuffmanDict(theRootNode, null, red_dict, ref red_total_bits);
 
             // write the huffman tree to a file with blue channel
-//            stream.WriteLine("Blue - Frequency - Huffman Representation - Total Bits");
-            WriteHuffmanDict(theRootNode2, null, blue_dict, ref blue_total_bits, stream);
+            //            stream.WriteLine("Blue - Frequency - Huffman Representation - Total Bits");
+            //WriteHuffmanDict(theRootNode2, null, blue_dict, ref blue_total_bits, stream);
+            WriteHuffmanDict(theRootNode2, null, blue_dict, ref blue_total_bits);
 
             // write the huffman tree to a file with green channel
-//            stream.WriteLine("Green - Frequency - Huffman Representation - Total Bits");
-            WriteHuffmanDict(theRootNode3, null, green_dict, ref green_total_bits, stream);
+            //            stream.WriteLine("Green - Frequency - Huffman Representation - Total Bits");
+            //WriteHuffmanDict(theRootNode3, null, green_dict, ref green_total_bits, stream);
+            WriteHuffmanDict(theRootNode3, null, green_dict, ref green_total_bits);
 
             // calculate the total bytes of the image for each channel
 
@@ -527,16 +565,17 @@ namespace ImageEncryptCompress
             long total_bytes = red_bytes + blue_bytes + green_bytes;
 
             // write the total bytes of the image
-            stream.WriteLine("total bytes: " + total_bytes);
+            //stream.WriteLine("total bytes: " + total_bytes);
 
             // write the compression ratio of the image
             long total_bits = red_total_bits + blue_total_bits + green_total_bits;
             long image_size = Height * Width * 24; // product by 24 for the 3 channels (red, green, blue) and each channel has 8 bits (1 byte)
             double compression_ratio = (double)total_bits / image_size;
-            stream.WriteLine("Compression Ratio: " + compression_ratio * 100 + "%");
+            compression_ratio *= 100; // to get the percentage
+            //stream.WriteLine("Compression Ratio: " + compression_ratio * 100 + "%");
 
             // close the stream writer
-            stream.Close();
+            //stream.Close();
 
 
             // law fy remainder ehgez bytes + 1
@@ -565,7 +604,8 @@ namespace ImageEncryptCompress
             {
                 for (int j = 0; j < Width; j++) //o(w)
                 {
-                    // red channel
+                    
+                    // ================== RED CHANNEL ==================
                     // get the huffman representation of the pixel
                     huffman_string = red_dict[ImageMatrix[i, j].red]; // temp = huffman representation of pixel 0
                     huffman_string_length = huffman_string.Length;
@@ -610,8 +650,9 @@ namespace ImageEncryptCompress
                             byte_remainder1 = 8;
                         }
                     }
+                    // ================== END RED CHANNEL ==================
 
-                    // blue channel
+                    // ================== BLUE CHANNEL ==================
                     huffman_string = blue_dict[ImageMatrix[i, j].blue];
                     huffman_string_length = huffman_string.Length;
                     if (huffman_string_length < byte_remainder2)
@@ -653,8 +694,9 @@ namespace ImageEncryptCompress
                             byte_remainder2 = 8; 
                         }
                     }
+                    // ================== END BLUE CHANNEL ==================
 
-                    // green channel
+                    // ================= GREEN CHANNEL ==================
                     huffman_string = green_dict[ImageMatrix[i, j].green];
                     huffman_string_length = huffman_string.Length;
                     if (huffman_string_length < byte_remainder3) 
@@ -698,6 +740,7 @@ namespace ImageEncryptCompress
                             byte_remainder3 = 8; 
                         }
                     }
+                    // ================== END GREEN CHANNEL ==================
                 }
             }
 
@@ -746,7 +789,9 @@ namespace ImageEncryptCompress
             binWriter.Close();
             ss.Close();
 
-            return total_bytes;
+            KeyValuePair<long, double> result = new KeyValuePair<long, double>(total_bytes, compression_ratio);
+
+            return result;
         }
 
         // function to decompress the image using the huffman tree and the binary file
@@ -767,9 +812,9 @@ namespace ImageEncryptCompress
             int green_length = Convert.ToInt32(stream_reader.ReadLine());
             int blue_length = Convert.ToInt32(stream_reader.ReadLine());
 
-            int red_extra_bits = Convert.ToInt32(stream_reader.ReadLine());
-            int green_extra_bits = Convert.ToInt32(stream_reader.ReadLine());
-            int blue_extra_bits = Convert.ToInt32(stream_reader.ReadLine());
+            //int red_extra_bits = Convert.ToInt32(stream_reader.ReadLine());
+            //int green_extra_bits = Convert.ToInt32(stream_reader.ReadLine());
+            //int blue_extra_bits = Convert.ToInt32(stream_reader.ReadLine());
 
             stream_reader.Close();
             readingStream.Close();

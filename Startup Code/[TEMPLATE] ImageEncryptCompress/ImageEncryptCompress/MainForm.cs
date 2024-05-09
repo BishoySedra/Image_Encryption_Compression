@@ -96,24 +96,13 @@ namespace ImageEncryptCompress
             // stop the stop watch
             sw.Stop();
 
-
-            // if the time of the operation is not zero
-            if (sw.ElapsedMilliseconds == 0)
-            {
-                // show the time of the operation in the message box
-                MessageBox.Show("Already Encrypted!");
-            }
-            else
-            {
-                // show the time of the operation in the message box
-                MessageBox.Show("Time: " + sw.ElapsedMilliseconds + " ms");
-            }
-
+            // show the time of the operation in the message box
+            MessageBox.Show("Time: " + sw.ElapsedMilliseconds + " ms");
 
             ImageOperations.DisplayImage(ImageMatrix, pictureBox2);
 
             // export the image to the desktop
-            ImageOperations.ExportImage(ImageMatrix, ImageOperations.EncryptedImagePath);
+            ImageOperations.SaveImage(ImageMatrix, ImageOperations.EncryptedImagePath);
         }
 
         private void txtWidth_TextChanged(object sender, EventArgs e)
@@ -160,21 +149,12 @@ namespace ImageEncryptCompress
             // stop the stop watch
             sw.Stop();
 
-            if (sw.ElapsedMilliseconds == 0)
-            {
-                // show the time of the operation in the message box
-                MessageBox.Show("Already Decrypted!");
-            }
-            else
-            {
-                // show the time of the operation in the message box
-            }
             MessageBox.Show("Time: " + sw.ElapsedMilliseconds + " ms");
 
             ImageOperations.DisplayImage(ImageMatrix, pictureBox2);
 
             // export the image to the desktop
-            ImageOperations.ExportImage(ImageMatrix, ImageOperations.DecryptedImagePath);
+            ImageOperations.SaveImage(ImageMatrix, ImageOperations.DecryptedImagePath);
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -202,17 +182,6 @@ namespace ImageEncryptCompress
             // stop the stop watch
             sw.Stop();
 
-            if (sw.ElapsedMilliseconds == 0)
-            {
-                // show the time of the operation in the message box
-                MessageBox.Show("Already Encrypted!");
-            }
-            else
-            {
-                // show the time of the operation in the message box
-                MessageBox.Show("Time: " + sw.ElapsedMilliseconds + " ms");
-            }
-
             ImageOperations.DisplayImage(ImageMatrix, pictureBox1);
         }
 
@@ -234,17 +203,6 @@ namespace ImageEncryptCompress
 
             // stop the stop watch
             sw.Stop();
-
-            if (sw.ElapsedMilliseconds == 0)
-            {
-                // show the time of the operation in the message box
-                MessageBox.Show("Already Decrypted!");
-            }
-            else
-            {
-                // show the time of the operation in the message box
-                MessageBox.Show("Time: " + sw.ElapsedMilliseconds + " ms");
-            }
 
             ImageOperations.DisplayImage(ImageMatrix, pictureBox1);
         }
@@ -359,7 +317,7 @@ namespace ImageEncryptCompress
             sw.Start();
 
             // construct the huffman tree function
-            long total_bytes = ImageOperations.CompressImage(ImageMatrix, tapPosition, initialSeed);
+            KeyValuePair<long,double> CompressionResult = ImageOperations.CompressImage(ImageMatrix, tapPosition, initialSeed);
 
             // stop the stop watch
             sw.Stop();
@@ -367,17 +325,11 @@ namespace ImageEncryptCompress
             // show the time of the operation in the message box
             MessageBox.Show("Time: " + sw.ElapsedMilliseconds + " ms");
 
-            long total_bits = total_bytes * 8;
-            int width = ImageOperations.GetWidth(ImageMatrix);
-            int height = ImageOperations.GetHeight(ImageMatrix);
-            int total_pixels = width * height * 24;
-            double compression_ratio = ((double)total_bits / total_pixels) * 100;
+            long total_bytes = CompressionResult.Key;
+            double compression_ratio = CompressionResult.Value;
 
             // show messsage box for the total bytes and the compression ratio
             MessageBox.Show("Total Bytes: " + total_bytes + "\nCompression Ratio: " + compression_ratio + "%");
-
-            // show message box for the result
-            //MessageBox.Show("Compression Ratio: " + result.Value + "%\nCompression Output: " + result.Key + " bytes");
         }
 
         private void label8_Click(object sender, EventArgs e)
@@ -481,7 +433,7 @@ namespace ImageEncryptCompress
             ImageOperations.DisplayImage(decompressedImage, pictureBox1);
 
             // export the decompressed image
-            ImageOperations.ExportImage(decompressedImage, ImageOperations.DecompressedImagePath);
+            ImageOperations.SaveImage(decompressedImage, ImageOperations.DecompressedImagePath);
         }
 
         private void button11_Click(object sender, EventArgs e)
@@ -500,7 +452,7 @@ namespace ImageEncryptCompress
             ImageMatrix = ImageOperations.EncryptDecryptImage(ImageMatrix, initialSeed, tapPosition);
 
             // second compress the image
-            long total_bytes = ImageOperations.CompressImage(ImageMatrix, tapPosition, initialSeed);
+            KeyValuePair<long, double> CompressionResult = ImageOperations.CompressImage(ImageMatrix, tapPosition, initialSeed);
 
             // stop the stop watch
             sw.Stop();
@@ -510,18 +462,14 @@ namespace ImageEncryptCompress
             long time_in_seconds = time / 1000;
             long time_in_minutes = time_in_seconds / 60;
 
+            long total_bytes = CompressionResult.Key;
+            double compression_ratio = CompressionResult.Value;
+
             // change the label for the compression status
             label14.Text = "Encryption and Compression Time:";
             label16.Text = "Seconds: " + time_in_seconds + " (" + time + " ms)";
             label17.Text = "Minutes: " + time_in_minutes;
             label20.Text = "Total Bytes: " + total_bytes;
-
-            total_bytes *= 8;
-            int width = ImageOperations.GetWidth(ImageMatrix);
-            int height = ImageOperations.GetHeight(ImageMatrix);
-            int total_pixels = width * height * 24;
-            double compression_ratio = (double)total_bytes / total_pixels * 100;
-
             label21.Text = "Compression Ratio: " + compression_ratio + "%";
         }
 
