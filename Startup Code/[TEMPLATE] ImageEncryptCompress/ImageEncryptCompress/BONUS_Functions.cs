@@ -12,90 +12,98 @@ namespace ImageEncryptCompress
         // O(n) where n is the length of the string
         public static string AlphanumericConvertion(string data)
         {
-            string binary = string.Empty;
-            int data_size = data.Length;
+            //string binary = string.Empty;
+            StringBuilder binary = new StringBuilder(); // O(1)
+            int data_size = data.Length; // O(1)
 
             // if it has 0's or 1's in data string, store it in binary
-            foreach (char c in data)
+            foreach (char c in data) // O(n) where n is the length of the string
             {
                 if (c == '0' || c == '1')
                 {
-                    binary += c;
+                    binary.Append(c); // O(1)
                 }
             }
 
-            int binary_size = binary.Length;
+            int binary_size = binary.Length; // O(1)
 
             if (binary_size == data_size)
             {
-                return binary;
+                return binary.ToString(); // O(1)
             }
 
-            string converted_result = String.Empty;
-            for (int i = 0; i < data_size; i++)
+            //string converted_result = String.Empty;
+            StringBuilder converted_result = new StringBuilder(); // O(1)
+            for (int i = 0; i < data_size; i++) // O(n) where n is the length of the string
             {
                 // convert the character to binary
-                string binary_char = Convert.ToString(data[i], 2);
-                Console.WriteLine("Character: " + data[i] + " Binary: " + binary_char);
-                converted_result += binary_char;
+                string binary_char = Convert.ToString(data[i], 2); // O(log(n))
+                //Console.WriteLine("Character: " + data[i] + " Binary: " + binary_char);
+                //converted_result += binary_char;
+                converted_result.Append(binary_char); // O(1)
             }
 
-            return converted_result;
+            return converted_result.ToString(); // O(1)
         }
 
-        public static string[] GetCombinations(int length) // θ(2^length)
+        // function to get all the possible combinations of a given length
+        // O(2^n * n) where n is the length of the binary string
+        public static string[] GetCombinations(int length)
         {
 
-            // get the total number of combinations
-            int total = (int)Math.Pow(2, length);
+            // total number of combinations
+            int total = (int)Math.Pow(2, length); // O(1) or O(log(n))
 
-            // create an array to store the combinations
-            string[] combinations = new string[total];
+            // array to store the combinations
+            string[] combinations = new string[total]; // O(1)
 
-            // loop through the total number of combinations
+            // iterate over all the possible combinations
+            // O(2^n * n) where n is the length of the binary string
             for (int i = 0; i < total; i++)
             {
                 // convert the number to binary
-                string binary = Convert.ToString(i, 2);
+                string binary = Convert.ToString(i, 2); // O(log(n))
 
                 // get the length of the binary string
-                int binary_length = binary.Length;
+                int binary_length = binary.Length; // O(1)
 
                 // check if the length of the binary string is less than the required length
-                if (binary_length < length)
+                if (binary_length < length) // O(1)
                 {
                     // add zeros to the left of the binary string to make it the required length
-                    binary = binary.PadLeft(length, '0');
+                    binary = binary.PadLeft(length, '0'); // O(n)
                 }
 
                 // add the binary string to the combinations array
-                combinations[i] = binary;
+                combinations[i] = binary; // O(1)
             }
 
             // return the combinations array
-            return combinations;
+            return combinations; // O(1)
         }
 
         // [BONUS] function to attack the encrypted image
+        // O(2^n * n * m) where n is the length of the binary string and m is the size of the image
         public static Tuple<string, int> Attack(RGBPixel[,] EncryptedImageMatrix, RGBPixel[,] DesiredImageMatrix, int Nbits) // O(2^n * n * m)
         {
             // get all the possible combinations of the initial seed
-            string[] combinations = GetCombinations(Nbits);
+            string[] combinations = GetCombinations(Nbits); // O(2^n * n)
 
-            // loop through all the combinations
-            foreach (string combination in combinations)
+            // iterate over all the possible combinations
+            // O(2^n * n * m) where n is the length of the binary string and m is the size of the image
+            foreach (string combination in combinations) // O(2^n)
             {
                 // loop through all the tap positions
-                for (int tapPosition = 0; tapPosition < Nbits; tapPosition++)
+                for (int tapPosition = 0; tapPosition < Nbits; tapPosition++) // O(n)
                 {
                     // decrypt the image using the current combination and tap position
-                    RGBPixel[,] DecryptedImageMatrix = ImageOperations.EncryptDecryptImage(EncryptedImageMatrix, combination, tapPosition);
+                    RGBPixel[,] DecryptedImageMatrix = ImageOperations.EncryptDecryptImage(EncryptedImageMatrix, combination, tapPosition); // O(n * m)
 
                     // check if the decrypted image is identical to the desired image
-                    if (TestIdenticality(DecryptedImageMatrix, DesiredImageMatrix))
+                    if (TestIdenticality(DecryptedImageMatrix, DesiredImageMatrix)) // O(n * m)
                     {
                         // return the combination and tap position
-                        return new Tuple<string, int>(combination, tapPosition);
+                        return new Tuple<string, int>(combination, tapPosition); // O(1)
                     }
                 }
             }
@@ -109,29 +117,27 @@ namespace ImageEncryptCompress
         // O(n * m) where n is the height of the image and m is the width of the image
         public static bool TestIdenticality(RGBPixel[,] ImageMatrix1, RGBPixel[,] ImageMatrix2)
         {
-            int Height1 = ImageMatrix1.GetLength(0);
-            int Width1 = ImageMatrix1.GetLength(1);
+            // get the dimensions of the two images
+            int Height1 = ImageOperations.GetHeight(ImageMatrix1); // O(1)
+            int Width1 = ImageOperations.GetWidth(ImageMatrix1); // O(1)
 
-            int Height2 = ImageMatrix2.GetLength(0);
-            int Width2 = ImageMatrix2.GetLength(1);
+            int Height2 = ImageOperations.GetHeight(ImageMatrix2); // O(1)
+            int Width2 = ImageOperations.GetWidth(ImageMatrix2); // O(1)
+            
 
             // checking if the dimensions of the two images are not the same
-            if (Height1 != Height2 || Width1 != Width2)
+            if (Height1 != Height2 || Width1 != Width2) // O(1)
             {
                 return false;
             }
 
-
-            //if (ImageMatrix1 != ImageMatrix2) { 
-            //    return false;
-            //}
-
             // checking the identicality of the two images for each pixel
-            for (int i = 0; i < Height1; i++)
+            // O(n * m) where n is the height of the image and m is the width of the image
+            for (int i = 0; i < Height1; i++) // O(n)
             {
-                for (int j = 0; j < Width1; j++)
+                for (int j = 0; j < Width1; j++)  // O(m)
                 {
-                    if (ImageMatrix1[i, j].red != ImageMatrix2[i, j].red || ImageMatrix1[i, j].green != ImageMatrix2[i, j].green || ImageMatrix1[i, j].blue != ImageMatrix2[i, j].blue)
+                    if (ImageMatrix1[i, j].red != ImageMatrix2[i, j].red || ImageMatrix1[i, j].green != ImageMatrix2[i, j].green || ImageMatrix1[i, j].blue != ImageMatrix2[i, j].blue) // O(1)
                     {
                         return false;
                     }

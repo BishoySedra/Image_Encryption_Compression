@@ -182,6 +182,9 @@ namespace ImageEncryptCompress
             // stop the stop watch
             sw.Stop();
 
+            // show the time of the operation in the message box
+            MessageBox.Show("Time: " + sw.ElapsedMilliseconds + " ms");
+
             ImageOperations.DisplayImage(ImageMatrix, pictureBox1);
         }
 
@@ -203,6 +206,9 @@ namespace ImageEncryptCompress
 
             // stop the stop watch
             sw.Stop();
+
+            // show the time of the operation in the message box
+            MessageBox.Show("Time: " + sw.ElapsedMilliseconds + " ms");
 
             ImageOperations.DisplayImage(ImageMatrix, pictureBox1);
         }
