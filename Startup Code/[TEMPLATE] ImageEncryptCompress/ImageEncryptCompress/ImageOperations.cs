@@ -535,31 +535,45 @@ namespace ImageEncryptCompress
             long red_rem = (red_total_bits % 8); // O(1)
             // if there are remaining bits, add an extra byte
             // O(1)
+            long red_bytes; // O(1)
             if (red_rem != 0) {
-                red_total_bits += 8; // O(1)        
+                red_total_bits += 8; // O(1)
+                red_bytes = red_total_bits / 8; // O(1)
+                red_total_bits -= 8; // O(1)
             }
-            long red_bytes = red_total_bits / 8; // O(1)
+            else {
+                red_bytes = red_total_bits / 8; // O(1)
+            }
+
             
 
             // green channel
             long green_rem = (green_total_bits % 8); // O(1)
             // if there are remaining bits, add an extra byte
             // O(1)
+            long green_bytes; // O(1)
             if (green_rem != 0) {
                 green_total_bits += 8; // O(1)
+                green_bytes = green_total_bits / 8;
+                green_total_bits -= 8; // O(1)
+            } else {
+                green_bytes = green_total_bits / 8;
             }
-            long green_bytes = green_total_bits / 8; // O(1)
 
 
             // blue channel
             long blue_rem = (blue_total_bits % 8); // O(1)
             // if there are remaining bits, add an extra byte
             // O(1)
+            long blue_bytes;
             if (blue_rem != 0) {
                 blue_total_bits += 8; // O(1)
+                blue_bytes = blue_total_bits / 8;
+                blue_total_bits -= 8;
+            } else {
+                blue_bytes = blue_total_bits / 8;
             }
-            long blue_bytes = blue_total_bits / 8; // O(1)
-
+            
             // calculate the total bytes of the image
             long total_bytes = red_bytes + blue_bytes + green_bytes; // O(1)
 
