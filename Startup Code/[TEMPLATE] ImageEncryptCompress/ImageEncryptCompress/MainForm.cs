@@ -74,6 +74,9 @@ namespace ImageEncryptCompress
 
             // label for the decompression time in minutes
             label18.Text = "";
+
+            // clear picture box 2
+            pictureBox2.Image = null;
         }
 
         private void btnGaussSmooth_Click(object sender, EventArgs e)

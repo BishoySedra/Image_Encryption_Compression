@@ -36,6 +36,7 @@ namespace ImageEncryptCompress
 
         public static string seedValue;
         public static int seedKey;
+        public static long global_red_bytes, global_green_bytes, global_blue_bytes;
 
         // path for text file of the huffman tree and some other data
         //public static string CompressionPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\RGB-Tree.txt";
@@ -758,18 +759,23 @@ namespace ImageEncryptCompress
                 Array.Copy(BitConverter.GetBytes(blueFreq[i]), 0, blueFreqByteArr, i * 4, 4); // O(1)
             }
 
-            FileStream ffs = new FileStream(compressedImageDataPath, FileMode.Truncate); // O(1)
-            StreamWriter ffss = new StreamWriter(ffs); // O(1)
-            ffss.WriteLine(red_bytes); // O(1)
-            ffss.WriteLine(green_bytes); // O(1)
-            ffss.WriteLine(blue_bytes); // O(1)
+            //FileStream ffs = new FileStream(compressedImageDataPath, FileMode.Truncate); // O(1)
+            //StreamWriter ffss = new StreamWriter(ffs); // O(1)
 
-            ffss.WriteLine(red_rem); // O(1)
-            ffss.WriteLine(green_rem); // O(1)
-            ffss.WriteLine(blue_rem); // O(1)
+            global_red_bytes = red_bytes; // O(1)
+            global_green_bytes = green_bytes; // O(1)
+            global_blue_bytes = blue_bytes; // O(1)
 
-            ffss.Close(); // O(1)
-            ffs.Close(); // O(1)
+            //ffss.WriteLine(red_bytes); // O(1)
+            //ffss.WriteLine(green_bytes); // O(1)
+            //ffss.WriteLine(blue_bytes); // O(1)
+
+            //ffss.WriteLine(red_rem); // O(1)
+            //ffss.WriteLine(green_rem); // O(1)
+            //ffss.WriteLine(blue_rem); // O(1)
+
+            //ffss.Close(); // O(1)
+            //ffs.Close(); // O(1)
 
             FileStream ss = new FileStream(BinaryWriterPath, FileMode.Truncate); // O(1)
             BinaryWriter binWriter = new BinaryWriter(ss); // O(1)
@@ -802,8 +808,8 @@ namespace ImageEncryptCompress
         public static RGBPixel[,] DecompressImage()
         {
             // declare the binary file stream and the binary reader
-            FileStream readingStream = new FileStream(compressedImageDataPath, FileMode.Open); // O(1)
-            StreamReader stream_reader = new StreamReader(readingStream); // O(1)
+            //FileStream readingStream = new FileStream(compressedImageDataPath, FileMode.Open); // O(1)
+            //StreamReader stream_reader = new StreamReader(readingStream); // O(1)
 
             // stream carries:
             // rgb length (3 lines)
@@ -812,16 +818,20 @@ namespace ImageEncryptCompress
             // (2) huffman representations (3) seed (4) tap position (5) width (6) height
 
             // lengths of rgb bytes
-            int red_length = Convert.ToInt32(stream_reader.ReadLine()); // O(1)
-            int green_length = Convert.ToInt32(stream_reader.ReadLine()); // O(1)
-            int blue_length = Convert.ToInt32(stream_reader.ReadLine()); // O(1)
+            //int red_length = Convert.ToInt32(stream_reader.ReadLine()); // O(1)
+            //int green_length = Convert.ToInt32(stream_reader.ReadLine()); // O(1)
+            //int blue_length = Convert.ToInt32(stream_reader.ReadLine()); // O(1)
+
+            int red_length = (int)global_red_bytes; // O(1)
+            int green_length = (int)global_green_bytes; // O(1)
+            int blue_length = (int)global_blue_bytes; // O(1)
 
             //int red_extra_bits = Convert.ToInt32(stream_reader.ReadLine());
             //int green_extra_bits = Convert.ToInt32(stream_reader.ReadLine());
             //int blue_extra_bits = Convert.ToInt32(stream_reader.ReadLine());
 
-            stream_reader.Close(); // O(1)
-            readingStream.Close(); // O(1)
+            //stream_reader.Close(); // O(1)
+            //readingStream.Close(); // O(1)
 
             FileStream binaryReadingStream = new FileStream(BinaryWriterPath, FileMode.Open); // O(1)
             BinaryReader binary_reader = new BinaryReader(binaryReadingStream); // O(1)
