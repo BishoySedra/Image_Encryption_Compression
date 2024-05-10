@@ -452,45 +452,45 @@ namespace ImageEncryptCompress
             }
             
             // construct the huffman tree for the red channel
-            // O(n * log n) where n is the number of nodes in the huffman tree
-            while (pq_red.Count != 1) // O(n)
+            // O(c * log c) where c is the number of nodes in the huffman tree
+            while (pq_red.Count != 1) // O(c)
             {
                 HuffmanNode node = new HuffmanNode(); // O(1)
-                HuffmanNode smallFreq = pq_red.Pop(); // O(log n)
-                HuffmanNode largeFreq = pq_red.Pop(); // O(log n)
+                HuffmanNode smallFreq = pq_red.Pop(); // O(log c)
+                HuffmanNode largeFreq = pq_red.Pop(); // O(log c)
 
                 node.Frequency = smallFreq.Frequency + largeFreq.Frequency; // O(1)
                 node.Left = largeFreq; // O(1)
                 node.Right = smallFreq; // O(1)
-                pq_red.Push(node); // O(log n)
+                pq_red.Push(node); // O(log c)
             }
 
             // construct the huffman tree for the green channel
-            // O(n * log n) where n is the number of nodes in the huffman tree
-            while (pq_green.Count != 1) // O(n)
+            // O(c * log c) where c is the number of nodes in the huffman tree
+            while (pq_green.Count != 1) // O(c)
             {
                 HuffmanNode node = new HuffmanNode(); // O(1)
-                HuffmanNode smallFreq = pq_green.Pop(); // O(log n)
-                HuffmanNode largeFreq = pq_green.Pop(); // O(log n)
+                HuffmanNode smallFreq = pq_green.Pop(); // O(log c)
+                HuffmanNode largeFreq = pq_green.Pop(); // O(log c)
 
                 node.Frequency = smallFreq.Frequency + largeFreq.Frequency; // O(1)
                 node.Left = largeFreq; // O(1)
                 node.Right = smallFreq; // O(1)
-                pq_green.Push(node); // O(log n)
+                pq_green.Push(node); // O(log c)
             }
 
             // construct the huffman tree for the blue channel
-            // O(n * log n) where n is the number of nodes in the huffman tree
-            while (pq_blue.Count != 1) // O(n)
+            // O(c * log c) where c is the number of nodes in the huffman tree
+            while (pq_blue.Count != 1) // O(c)
             {
                 HuffmanNode node = new HuffmanNode(); // O(1)
-                HuffmanNode smallFreq = pq_blue.Pop(); // O(log n)
-                HuffmanNode largeFreq = pq_blue.Pop(); // O(log n)
+                HuffmanNode smallFreq = pq_blue.Pop(); // O(log c)
+                HuffmanNode largeFreq = pq_blue.Pop(); // O(log c)
 
                 node.Frequency = smallFreq.Frequency + largeFreq.Frequency; // O(1)
                 node.Left = largeFreq; // O(1)
                 node.Right = smallFreq; // O(1)
-                pq_blue.Push(node); // O(log n)
+                pq_blue.Push(node); // O(log c)
             }
 
             // get the root node of the huffman tree for each channel
@@ -517,48 +517,48 @@ namespace ImageEncryptCompress
             // write the huffman tree to a file with red channel
             //            stream.WriteLine("Red - Frequency - Huffman Representation - Total Bits");
             //WriteHuffmanDict(theRootNode, null, red_dict, ref red_total_bits, stream);
-            WriteHuffmanDict(theRootNode, null, red_dict, ref red_total_bits); // O(n)
+            WriteHuffmanDict(theRootNode, null, red_dict, ref red_total_bits); // O(c)
 
             // write the huffman tree to a file with blue channel
             //            stream.WriteLine("Blue - Frequency - Huffman Representation - Total Bits");
             //WriteHuffmanDict(theRootNode2, null, blue_dict, ref blue_total_bits, stream);
-            WriteHuffmanDict(theRootNode2, null, blue_dict, ref blue_total_bits); // O(n)
+            WriteHuffmanDict(theRootNode2, null, blue_dict, ref blue_total_bits); // O(c)
 
             // write the huffman tree to a file with green channel
             //            stream.WriteLine("Green - Frequency - Huffman Representation - Total Bits");
             //WriteHuffmanDict(theRootNode3, null, green_dict, ref green_total_bits, stream);
-            WriteHuffmanDict(theRootNode3, null, green_dict, ref green_total_bits); // O(n)
+            WriteHuffmanDict(theRootNode3, null, green_dict, ref green_total_bits); // O(c)
 
             // calculate the total bytes of the image for each channel
 
             // red channel
-            long red_bytes = red_total_bits / 8; // O(1)
             long red_rem = (red_total_bits % 8); // O(1)
             // if there are remaining bits, add an extra byte
             // O(1)
-            if (red_rem != 0) { 
-                red_bytes++; // O(1)        
+            if (red_rem != 0) {
+                red_total_bits += 8; // O(1)        
             }
-
+            long red_bytes = red_total_bits / 8; // O(1)
+            
 
             // green channel
-            long green_bytes = green_total_bits / 8; // O(1)
             long green_rem = (green_total_bits % 8); // O(1)
             // if there are remaining bits, add an extra byte
             // O(1)
-            if (green_rem != 0) { 
-                green_bytes++; // O(1)
+            if (green_rem != 0) {
+                green_total_bits += 8; // O(1)
             }
+            long green_bytes = green_total_bits / 8; // O(1)
 
 
             // blue channel
-            long blue_bytes = blue_total_bits / 8; // O(1)
             long blue_rem = (blue_total_bits % 8); // O(1)
             // if there are remaining bits, add an extra byte
             // O(1)
-            if (blue_rem != 0) { 
-                blue_bytes++; // O(1)
+            if (blue_rem != 0) {
+                blue_total_bits += 8; // O(1)
             }
+            long blue_bytes = blue_total_bits / 8; // O(1)
 
             // calculate the total bytes of the image
             long total_bytes = red_bytes + blue_bytes + green_bytes; // O(1)
@@ -624,21 +624,21 @@ namespace ImageEncryptCompress
                     }
                     else
                     {
-                        huffman_substr = huffman_string.Substring(0, byte_remainder1); // O(n)
+                        huffman_substr = huffman_string.Substring(0, byte_remainder1); // O(1)
                         redBinaryRepresentationToWriteInFile[redIndex] <<= byte_remainder1; // O(1)
                         redBinaryRepresentationToWriteInFile[redIndex] += Convert.ToByte(huffman_substr, 2); // O(1)
                         redIndex++; // O(1)
-                        huffman_string = huffman_string.Substring(byte_remainder1, huffman_string.Length - byte_remainder1); // O(n)
+                        huffman_string = huffman_string.Substring(byte_remainder1, huffman_string.Length - byte_remainder1); // O(1)
 
                         // iterate over the huffman representation and store the binary representation in the byte array
                         // O(n) where n is the length of the huffman representation
                         while (huffman_string.Length >= 8) 
                         {
-                            huffman_substr = huffman_string.Substring(0, 8); // O(n)
+                            huffman_substr = huffman_string.Substring(0, 8); // O(1)
                             redBinaryRepresentationToWriteInFile[redIndex] <<= 8; // O(1)
                             redBinaryRepresentationToWriteInFile[redIndex] += Convert.ToByte(huffman_substr, 2); // O(1)
                             redIndex++; // O(1)
-                            huffman_string = huffman_string.Substring(8, huffman_string.Length - 8); // O(n)
+                            huffman_string = huffman_string.Substring(8, huffman_string.Length - 8); // O(1)
                         }
 
                         if (huffman_string.Length != 0)
@@ -672,19 +672,19 @@ namespace ImageEncryptCompress
                     }
                     else
                     {
-                        huffman_substr = huffman_string.Substring(0, byte_remainder2); // O(n)
+                        huffman_substr = huffman_string.Substring(0, byte_remainder2); // O(1)
                         blueBinaryRepresentationToWriteInFile[blueIndex] <<= byte_remainder2; // O(1)
                         blueBinaryRepresentationToWriteInFile[blueIndex] += Convert.ToByte(huffman_substr, 2);  // O(1)
                         blueIndex++; // O(1)
-                        huffman_string = huffman_string.Substring(byte_remainder2, huffman_string_length - byte_remainder2); // O(n)
+                        huffman_string = huffman_string.Substring(byte_remainder2, huffman_string_length - byte_remainder2); // O(1)
 
                         while (huffman_string.Length >= 8)
                         {
-                            huffman_substr = huffman_string.Substring(0, 8); // O(n) 
+                            huffman_substr = huffman_string.Substring(0, 8); // O(1)
                             blueBinaryRepresentationToWriteInFile[blueIndex] <<= 8; // O(1)
                             blueBinaryRepresentationToWriteInFile[blueIndex] += Convert.ToByte(huffman_substr, 2); // O(1)
                             blueIndex++; // O(1)
-                            huffman_string = huffman_string.Substring(8, huffman_string.Length - 8); // O(n)
+                            huffman_string = huffman_string.Substring(8, huffman_string.Length - 8); // O(1)
                         }
                         if (huffman_string.Length != 0)
                         {
@@ -716,19 +716,19 @@ namespace ImageEncryptCompress
                     }
                     else
                     {
-                        huffman_substr = huffman_string.Substring(0, byte_remainder3); // O(n)
+                        huffman_substr = huffman_string.Substring(0, byte_remainder3); // O(1)
                         greenBinaryRepresentationToWriteInFile[greenIndex] <<= byte_remainder3; // O(1)
                         greenBinaryRepresentationToWriteInFile[greenIndex] += Convert.ToByte(huffman_substr, 2); // O(1)
                         greenIndex++; // O(1)
-                        huffman_string = huffman_string.Substring(byte_remainder3, huffman_string_length - byte_remainder3);// O(n)
+                        huffman_string = huffman_string.Substring(byte_remainder3, huffman_string_length - byte_remainder3);// O(1)
 
                         while (huffman_string.Length >= 8) 
                         {
-                            huffman_substr = huffman_string.Substring(0, 8); // O(n)
+                            huffman_substr = huffman_string.Substring(0, 8); // O(1)
                             greenBinaryRepresentationToWriteInFile[greenIndex] <<= 8; // O(1)
                             greenBinaryRepresentationToWriteInFile[greenIndex] += Convert.ToByte(huffman_substr, 2); // O(1)
                             greenIndex++; // O(1)
-                            huffman_string = huffman_string.Substring(8, huffman_string.Length - 8); // O(n)
+                            huffman_string = huffman_string.Substring(8, huffman_string.Length - 8); // O(1)
                         }
 
                         if (huffman_string.Length != 0) 
@@ -910,51 +910,51 @@ namespace ImageEncryptCompress
 
 
             // huffman tree for the red channel
-            // O(n * log n) where n is the number of nodes in the huffman tree
+            // O(C * log C) where C is the number of nodes in the huffman tree
             while (pq_red.Count != 1)
             {
                 HuffmanNode node = new HuffmanNode(); // O(1)
-                HuffmanNode smallFreq = pq_red.Pop(); // O(log n)
-                HuffmanNode largeFreq = pq_red.Pop(); // O(log n)
+                HuffmanNode smallFreq = pq_red.Pop(); // O(log c)
+                HuffmanNode largeFreq = pq_red.Pop(); // O(log c)
 
                 node.Frequency = smallFreq.Frequency + largeFreq.Frequency; // O(1)
                 node.Left = largeFreq; // O(1)
                 node.Right = smallFreq; // O(1)
-                pq_red.Push(node); // O(log n)
+                pq_red.Push(node); // O(log c)
             }
 
             // huffman tree for the green channel
-            // O(n * log n) where n is the number of nodes in the huffman tree
+            // O(C * log C) where C is the number of nodes in the huffman tree
             while (pq_green.Count != 1)
             {
                 HuffmanNode node = new HuffmanNode(); // O(1)
-                HuffmanNode smallFreq = pq_green.Pop(); // O(log n)
-                HuffmanNode largeFreq = pq_green.Pop(); // O(log n)
+                HuffmanNode smallFreq = pq_green.Pop(); // O(log c)
+                HuffmanNode largeFreq = pq_green.Pop(); // O(log c)
 
                 node.Frequency = smallFreq.Frequency + largeFreq.Frequency; // O(1)
                 node.Left = largeFreq; // O(1)
                 node.Right = smallFreq; // O(1)
-                pq_green.Push(node); // O(log n)
+                pq_green.Push(node); // O(log c)
             }
 
             // huffman tree for the blue channel
-            // O(n * log n) where n is the number of nodes in the huffman tree
+            // O(C * log C) where C is the number of nodes in the huffman tree
             while (pq_blue.Count != 1)
             {
                 HuffmanNode node = new HuffmanNode(); // O(1)
-                HuffmanNode smallFreq = pq_blue.Pop(); // O(log n)
-                HuffmanNode largeFreq = pq_blue.Pop(); // O(log n)
+                HuffmanNode smallFreq = pq_blue.Pop(); // O(log c)
+                HuffmanNode largeFreq = pq_blue.Pop(); // O(log c)
 
                 node.Frequency = smallFreq.Frequency + largeFreq.Frequency; // O(1)
                 node.Left = largeFreq; // O(1)
                 node.Right = smallFreq; // O(1)
-                pq_blue.Push(node);     // O(log n)
+                pq_blue.Push(node);     // O(log c)
             }
 
             // extract the roots of the rgb trees
-            HuffmanNode rootNodeRed = pq_red.Pop(); // O(log n)
-            HuffmanNode rootNodeGreen = pq_green.Pop(); // O(log n)
-            HuffmanNode rootNodeBlue = pq_blue.Pop(); // O(log n)
+            HuffmanNode rootNodeRed = pq_red.Pop(); // theta(1)
+            HuffmanNode rootNodeGreen = pq_green.Pop(); // theta(1)
+            HuffmanNode rootNodeBlue = pq_blue.Pop(); // theta(1)
 
             //read from the file the red, green, blue bytes compressed values
             byte[] compressed_red = binary_reader.ReadBytes(red_length); // O(1)
@@ -986,8 +986,8 @@ namespace ImageEncryptCompress
             long crl = compressed_red.Length; // O(1)
 
             // iterate over the compressed array and decompress it
-            // O(n) where n is the length of the compressed array
-            while (cnt < crl) // O(n) where n is the length of the compressed array
+            // O(n) where n is the length of the compressed array which is equal to number of pixels in image O(N*M)
+            while (cnt < crl)
             {
                 while (currBitCount < 8) // O(1)
                 {
@@ -1029,8 +1029,8 @@ namespace ImageEncryptCompress
             long cgl = compressed_green.Length; // O(1)
 
             // iterate over the compressed array and decompress it
-            // O(n) where n is the length of the compressed array
-            while (cnt < cgl) // O(n) where n is the length of the compressed array
+            // O(n) where n is the length of the compressed array which is equal to number of pixels in image O(N*M)
+            while (cnt < cgl)
             {
                 while (currBitCount < 8) // O(1)
                 {
@@ -1072,8 +1072,8 @@ namespace ImageEncryptCompress
             long cbl = compressed_blue.Length; // O(1)
 
             // iterate over the compressed array and decompress it
-            // O(n) where n is the length of the compressed array
-            while (cnt < cbl) // O(n) where n is the length of the compressed array
+            // O(n) where n is the length of the compressed array which is equal to number of pixels in image O(Width*Height)
+            while (cnt < cbl) 
             {
                 while (currBitCount < 8) // O(1)
                 {
