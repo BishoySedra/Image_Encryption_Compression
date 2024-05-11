@@ -22,8 +22,8 @@ To successfully launch the project, follow these steps:
 
 For testing the image encryption and compression algorithms, you can download sample test cases and complete test cases from the following links:
 
-- **Sample Test Cases:** [Download Sample Test Cases](link_to_sample_test_cases)
-- **Complete Test Cases:** [Download Complete Test Cases](link_to_complete_test_cases)
+- **Sample Test Cases:** [Download Sample Test Cases](https://cisasuedu.sharepoint.com/sites/ALG24.Term2/Shared%20Documents/Forms/AllItems.aspx?csf=1&web=1&e=X6UUx7&cid=fa20e86d%2D0972%2D405f%2Dbaa4%2De9c0112148b9&FolderCTID=0x01200024312EF0CCE30045A4101C13775FBAF2&id=%2Fsites%2FALG24%2ETerm2%2FShared%20Documents%2FGeneral%2F5%20Project%2FMATERIALS%2F%5B1%5D%20Image%20Encryption%20and%20Compression%2FSample%20Test)
+- **Complete Test Cases:** [Download Complete Test Cases](https://cisasuedu.sharepoint.com/sites/ALG24.Term2/Shared%20Documents/Forms/AllItems.aspx?csf=1&web=1&e=mkhNcv&cid=f4f75593%2D8065%2D4d7b%2Dad17%2D19e32c33174d&FolderCTID=0x01200024312EF0CCE30045A4101C13775FBAF2&id=%2Fsites%2FALG24%2ETerm2%2FShared%20Documents%2FGeneral%2F5%20Project%2FMATERIALS%2F%5B1%5D%20Image%20Encryption%20and%20Compression%2FComplete%20Test)
 
 ### Open-Source Priority Queue Code
 
