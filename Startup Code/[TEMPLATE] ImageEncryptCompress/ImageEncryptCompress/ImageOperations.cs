@@ -39,30 +39,30 @@ namespace ImageEncryptCompress
         public static long global_red_bytes, global_green_bytes, global_blue_bytes;
 
         // path for text file of the huffman tree and some other data
-        //public static string CompressionPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\RGB-Tree.txt";
+        //public static string CompressionPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Original Materials\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\RGB-Tree.txt";
 
         // path for binary file
-        public static string BinaryWriterPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\Binary.bin";
+        public static string BinaryWriterPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Original Materials\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\Binary.bin";
 
         // paths for the encrypted and decrypted images
-        public static string compressedImageDataPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\com.txt";
+        public static string compressedImageDataPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Original Materials\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\com.txt";
 
         // paths for the encrypted and decrypted images
-        public static string EncryptedImagePath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Encryption\\MY_OUTPUT\\Encryption\\Encrypted.bmp";
-        public static string DecryptedImagePath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Encryption\\MY_OUTPUT\\Decryption\\Decrypted.bmp";
+        public static string EncryptedImagePath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Original Materials\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Encryption\\MY_OUTPUT\\Encryption\\Encrypted.bmp";
+        public static string DecryptedImagePath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Original Materials\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Encryption\\MY_OUTPUT\\Decryption\\Decrypted.bmp";
 
         // paths for the compressed and decompressed images
-        public static string DecompressedImagePath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Decompression\\Decompressed.bmp";
+        public static string DecompressedImagePath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Original Materials\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Decompression\\Decompressed.bmp";
 
         // paths for the huffman representations for each color channel of each pixel
-        //public static string CompressedRedPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\R-Tree.txt";
-        //public static string CompressedGreenPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\G-Tree.txt";
-        //public static string CompressedBluePath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\B-Tree.txt";
+        //public static string CompressedRedPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Original Materials\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\R-Tree.txt";
+        //public static string CompressedGreenPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Original Materials\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\G-Tree.txt";
+        //public static string CompressedBluePath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Original Materials\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\B-Tree.txt";
 
         // paths for compressed binary strings for each color channel of each pixel
-        //public static string CompressedRedBinaryPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\R-Binary.bin";
-        //public static string CompressedGreenBinaryPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\G-Binary.bin";
-        //public static string CompressedBlueBinaryPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\B-Binary.bin";
+        //public static string CompressedRedBinaryPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Original Materials\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\R-Binary.bin";
+        //public static string CompressedGreenBinaryPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Original Materials\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\G-Binary.bin";
+        //public static string CompressedBlueBinaryPath = "D:\\Study\\Third Year\\Semester 6\\Algo\\Original Materials\\Project\\Image_Encryption_Compression\\Sample Test\\SampleCases_Compression\\MY_OUTPUT\\Compression\\B-Binary.bin";
 
         //public static int red_length = 0, green_length = 0, blue_length = 0, Tape_Position = 0;
         //public static int[] R, G, B;
